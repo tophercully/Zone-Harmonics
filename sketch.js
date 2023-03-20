@@ -2,6 +2,8 @@ w= 1600
 h = 2000
 marg = w*0.025
 
+willReadFrequently = true
+
 let shade;
 function preload() {
   shade = loadShader("shader.vert", "shader.frag");
@@ -17,6 +19,7 @@ pxSize = url.searchParams.get('size')
 
 
 //declarations
+angs = []
 
 //parameters
 
@@ -38,6 +41,9 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 
   p = createGraphics(w, h)
   c = createGraphics(w, h)
+
+  l1 = createGraphics(w, h)
+  l2 = createGraphics(w, h)
   angleMode(DEGREES)
   p.angleMode(DEGREES)
   c.angleMode(DEGREES)
@@ -48,17 +54,40 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 
 function draw() {
   background(bgc)
+  c.background('white')
   p.background(bgc)
+  l1.background(bgc)
 
   //Sketch
+  // arcRing(w/2, h/2, 500, 500, 100)
+  // arcRing(w/2, h/2, 1000, 1000, 200)
+
+  // arcRing2(w/2, h/2, 1000, 1000, 200)
+
+  // c.stroke('white')
+  // cutter(255)
+  // cutter(100)
+  for(let i = 0; i < 10; i++) {
+    dir = fxrand()
+    if(dir < 0.5) {
+      newSectionVert()
+    } else {
+      newSectionHor()
+    }
+    
+  }
+
 
 
   //Post processing
-   copy(p, 0, 0, w, h, 0, 0, w, h)
+  //  copy(p, 0, 0, w, h, 0, 0, w, h)
    bgc = color(bgc)
    shader(shade)
    shade.setUniform("u_resolution", [w, h]);
-   shade.setUniform("p", p);
+   shade.setUniform("p", c);
+   shade.setUniform("c", c);
+   shade.setUniform("l1", l1);
+   shade.setUniform("l2", l2);
    shade.setUniform("seed", randomVal(0, 10));
    shade.setUniform("marg", map(marg, 0, w, 0, 1));
    shade.setUniform("bgc", [

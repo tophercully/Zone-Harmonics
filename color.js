@@ -25,7 +25,7 @@ bgNames = [
 ];
 //Background color parameters
 bgNum = randomInt(0, 9);
-bgc = bgCols[bgNum];
+bgc = 'white'//bgCols[bgNum];
 bgName = bgNames[bgNum];
 
 //Make a color that always contrasts bgc
@@ -159,21 +159,76 @@ const oilPastel = [
 
 const popper = ["#F5D365", "#E66C64", "#92BCC8", "#4F7C9A", frameCol];
 
-const pals = [source, shepard, toyBlocks, mcWoot, soft, jazzy, ceramic, oilPastel, mcNay, oKeefe, flowerMarket, oilPaint];
+
+const bau = [
+  "#1267b7",
+  "#ec3e2b",
+  "#f6b81a",
+  "#E4D6C2",
+  "#1D1F22",
+]
+
+const elliot = [
+  "#E73542",
+  "#F6A026",
+  "#2CA8C4",
+  "#EE7140",
+  "#289C5B",
+  "#F5E2CC",
+  "#161117"
+]
+const vint = [
+  'black',
+  '#FDDEBD',
+  '#3255A4',
+  '#62A8E5',
+  '#FF8E91'
+]
+const wildberry = [
+  'black',
+  '#62A8E5',
+  '#BB76CF',
+  '#407060',
+  '#FF6C2F',
+  '#fff0e0',
+]
+
+
+
+const blockA = ["#E4E7E0","#F0829D","#428E8A","#F4E8AE","#109BC4","#1C1E1B"]
+
+const blockB = ["#1D9042","#212322","#0C8ABB","#E2E5DE","#C77B99","#E97D48","#DDC267"]
+
+const blockC = ["#1F1E23","#0068C1","#E7CF63","#F3669A","#D6D8D5"]
+
+const burn = ["#00b4e2","#fd4f92","#ff7b89","#ffa070","#ffd403"]
+
+const scifi = ["#4ea459","#47bc89","#38928a","#e2a48e","#c35548","#33778a","#8bd6e8","#11120a","#f8ddc3","#a7d0c0"]
+
+const yeller = ["#29221c","#8e3b2d","#b27469","#f49f10","#fedb49","#e7d0c0","#ceb29a","#c9ced1","#b0b8bb","#646d4e"]
+
+const overlook = ["#3d4d20","#ad0b08","#1d5473","#798b97","#edd2b7","#b76439","#d2955f","#282723"]
+
+const helmetFace = ["#617a5c","#a3ab86","#accbf9","#f3c9f4","#030305","#cfd9e3","#e3e4e8"]
+
+
+const achro = [
+  'black',
+  'white'
+]
+const pals = [source, shepard, bau, elliot, vint, wildberry, burn, scifi, yeller, helmetFace];
 
 const palNames = [
   "Source",
   "Commander Shepard",
-  "Toy Blocks",
-  "McWoot",
-  "Soft",
-  "Jazzy",
-  "Ceramic",
-  "Oil Pastel",
-  "McNay",
-  "O'Keefe",
-  "Flower Market",
-  "Oil Paint"
+  "Bau",
+  "Elliot",
+  "Vint",
+  "Wildberry",
+  "Burn",
+  "SciFi",
+  "Yeller",
+  "HelmetFace",
 ];
 
 //Palette parameters

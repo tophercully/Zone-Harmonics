@@ -7,6 +7,9 @@ varying vec2 vTexCoord;
 
 //textures and uniforms from p5
 uniform sampler2D p;
+uniform sampler2D c;
+uniform sampler2D l1;
+uniform sampler2D l2;
 uniform vec2 u_resolution;
 uniform float seed;
 uniform vec3 bgc;
@@ -58,8 +61,19 @@ void main() {
   st.xy += (random(st.xy)*0.001)-0.0005;
   float warp = map(noise(seed+st.xy*5.0), 0.0, 1.0, -0.005, 0.005);
   //st.xy += warp;
+  vec4 texC = texture2D(c, stB);
+
+  float lum = texC.r;
+  
+  // st.x += map(lum, 0.0, 1.0, -0.025, 0.025);
+
 
   vec4 texP = texture2D(p, st);
+  vec4 texL1 = texture2D(l1, st);
+  vec4 texL2 = texture2D(l2, st);
+  
+
+  
 
   //color noise
   float noiseGray = random(st.xy)*0.25;
@@ -67,7 +81,9 @@ void main() {
   vec3 color = vec3(0.0);
   vec3 final = vec3(0.0);
   color = vec3(texP.r, texP.g, texP.b);
-
+  if(lum < 0.5) {
+    color = texL1.rgb;
+  }
   //Draw margin
   float margX = marg;
   float margY = margX*0.8;
@@ -75,6 +91,7 @@ void main() {
     color = vec3(bgc.r, bgc.g, bgc.b);
   }
 
+  color = texP.rgb;
 
   gl_FragColor = vec4(color+noiseGray, 1.0);
 }
