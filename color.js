@@ -1,14 +1,14 @@
 bgCols = [
-  "#FFF5EE", //seashell
-  "#fbf6e3", //canvas
+  // "#FFF5EE", //seashell
+  // "#fbf6e3", //canvas
   "#E6E0D4", //white coffee
-  "#FDDEBD", //butter white
-  "#F6FCFA", //white rose
+  // "#FDDEBD", //butter white
+  // "#F6FCFA", //white rose
   "#ECECEE", //christmas white
   "#1F201F", //retro black
-  "#212122", //ink black
-  "#1B1B1B", //eerie black
-  "#242124", //raisin black
+  // "#212122", //ink black
+  // "#1B1B1B", //eerie black
+  // "#242124", //raisin black
 ];
 
 bgNames = [
@@ -24,8 +24,8 @@ bgNames = [
   "Raisin Black",
 ];
 //Background color parameters
-bgNum = randomInt(0, 9);
-bgc = 'white'//bgCols[bgNum];
+bgNum = randomInt(0, 2);
+bgc = bgCols[bgNum];
 bgName = bgNames[bgNum];
 
 //Make a color that always contrasts bgc
@@ -211,6 +211,41 @@ const overlook = ["#3d4d20","#ad0b08","#1d5473","#798b97","#edd2b7","#b76439","#
 
 const helmetFace = ["#617a5c","#a3ab86","#accbf9","#f3c9f4","#030305","#cfd9e3","#e3e4e8"]
 
+const testA = ["#142e70", "#f74d13"]
+const testB = ["#FF0000","#0093EE","#FF81F0"]
+const testC = ["#E1D8C4","#FEC85C","#4779BB"]
+const testD = ["#FF4736","#007822","#003CFF"]
+const testE = ["#efa738","#3796f0"] //LOVE
+const testF = ["#F56905", "#074EE5"] //also love
+const testG = ["#4FA55E", "#DC6311"]
+const testH = ["#2C4CB8","#EF3C19"]// so poppin
+const testI = ["#edc937","#E93D18"]
+const testJ = ["#2F81BC", ]
+const testK = ["#E8BB27", "#C14736"]
+
+const fullColor = ["#1f46c8","#EF3C19", "#f6b81a", "#4FA55E", '#b44fd0', "#EE7140", '#FF48B0',]
+
+const riso2 = [
+  '#FF48B0',
+  // '#FF8E91',
+  // '#FF7477',
+  '#FF665E',
+  // '#FF6C2F',
+  '#FFB511',
+  '#FFE800',
+  //'#E3ED55',
+  '#67B346',
+  // '#62C2B1',
+  '#5EC8E5',
+  // '#62A8E5',
+  // '#0078BF',
+  // '#3255A4',
+  '#BB76CF',
+  frameCol,
+  bgc,
+  // '#407060',
+  // '#D1517A',
+  ]
 
 const achro = [
   'black',
@@ -233,37 +268,12 @@ const palNames = [
 
 //Palette parameters
 palNum = randomInt(0, pals.length-1);
-pal = pals[palNum];
+pal = fullColor//pals[palNum];
 palName = palNames[palNum];
 
 console.log(palName)
 
-//Setup for the next step
-lighterPal = [];
-darkerPal = [];
-warmerPal = [];
-coolerPal = [];
-
-coolTemp = 5000;
-warmTemp = 8000;
-
-//Increase color variation by 5x-ing our palette size and making slight adjustments to each copy
-for (let i = 0; i < pal.length-1; i++) {
-  lighterPal[i] = chroma(pal[i]).brighten(0.35).hex();
-  darkerPal[i] = chroma(pal[i]).darken(0.35).hex();
-  warmerPal[i] = chroma
-    .mix(pal[i], chroma.temperature(coolTemp).hex(), 0.5)
-    .saturate()
-    .hex();
-  coolerPal[i] = chroma
-    .mix(pal[i], chroma.temperature(warmTemp).hex(), 0.5)
-    .saturate()
-    .hex();
-}
-
-//Combine palettes and shuffle that full palette
-fullPal = [].concat(pal, darkerPal, lighterPal);
-truePal = shuff(fullPal);
+truePal = shuff(pal);
 
 //Pass our palette back to the CSS spinner
 let root = document.documentElement;

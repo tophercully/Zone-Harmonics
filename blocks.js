@@ -1,0 +1,203 @@
+class Block {
+    constructor(x, y, wid, hei) {
+        this.pos = createVector(x, y)
+        this.wid = wid 
+        this.hei = hei 
+        this.sz = hei*wid
+        this.colorChance = fxrand()
+        this.colNum = randomInt(0, 1)
+        this.colA = colArray[this.colNum]
+        this.colB = colArray[1-this.colNum]
+        if(this.colorChance < 0) {
+            this.col = this.colB
+            this.oppCol = this.colA
+        } else {
+            this.col = this.colA
+            this.oppCol = this.colB
+        }
+        console.log(this.col)
+        this.aspects = [this.wid, this.hei]
+        this.shortSide = min(this.aspects)
+        this.longSide = max(this.aspects)
+        this.ratio = this.longSide/this.shortSide
+        if(this.ratio > 2) {
+            this.bar = true
+            this.block = false
+        } else {
+            this.block = true 
+            this.bar = false
+        } 
+        this.corner = this.shortSide*cornerRatio
+        this.decider = randomInt(1, 7)
+    }
+
+    removeOption() {
+        c.rectMode(CENTER)
+        this.bgLayer = randBool(0.5)
+        if(this.bgLayer == true) {
+            c.fill(200)
+        } else {
+            c.fill('black')
+        }
+        c.stroke('black')
+        c.rect(this.pos.x, this.pos.y, this.wid, this.hei)
+    }
+
+    debugShow() {
+        c.rectMode(CENTER)
+        c.strokeWeight(0.5)
+        c.stroke('red')
+        // c.noFill()
+        this.val = randomVal(0, 255)
+        c.fill(chroma(this.val, this.val, this.val).alpha(1).hex())
+        c.rect(this.pos.x, this.pos.y, this.wid, this.hei)
+        c.stroke('black')
+        c.strokeWeight(10)
+        c.point(here.x, here.y)
+    }
+
+    showRect() {
+        p.rectMode(CENTER)
+        p.noStroke()
+        p.fill(this.col)
+        p.rect(this.pos.x, this.pos.y, this.wid-padding, this.hei-padding, this.corner)
+    }
+
+    showLines() {
+        p.rectMode(CENTER)
+        p.noFill()
+        p.stroke('black')
+        p.rect(this.pos.x, this.pos.y, this.wid, this.hei)
+    }
+
+    showTextBox() {
+        textBoxNew(this.pos.x, this.pos.y, this.wid, this.hei, randomInt(1, 10), randomVal(0.1, 0.4), randomVal(0.5, 0.8), this.col, padding*0.3)
+    }
+
+    showHeader() {
+        
+        textBoxNew(this.pos.x, this.pos.y, this.wid, this.hei, randomInt(1, 3), randomVal(0.1, 0.4), 0.8, this.col, padding*0.3)
+    }
+
+    showCircRow() {
+        this.padding = randomVal(0.1, 0.3)
+        
+        if(this.wid > this.hei) {
+            this.r = this.hei
+            this.pad = this.r*randomVal(0.1, 0.3)
+            this.rad = this.r-this.pad
+            this.num = Math.floor((this.wid-this.rad-(this.pad*2))/this.hei)
+            // this.startX = 
+            for(let i = 0; i < this.num+1; i++) {
+                this.fillChance = fxrand()
+                if(this.fillChance < 0.5) {
+                    p.fill(this.col)
+                    p.noStroke()
+                } else {
+                    p.stroke(this.col)
+                    p.strokeWeight(2)
+                    p.noFill()
+                }
+                this.xPos = map(i, 0, this.num, this.pos.x-(this.wid/2)+this.rad/2+this.pad, this.pos.x+(this.wid/2)-this.rad/2-this.pad)
+                this.yPos = this.pos.y
+                
+                randShape(this.xPos, this.yPos, this.rad, this.decider)
+            }
+        } else if(this.hei > this.wid) {
+            this.r = this.wid
+            this.pad = this.r*randomVal(0.1, 0.3)
+            this.rad = this.r-this.pad
+            this.num = Math.floor((this.hei-this.rad-(this.pad*2))/this.wid)
+            
+            // this.startX = 
+            for(let i = 0; i < this.num+1; i++) {
+                this.yPos = map(i, 0, this.num, this.pos.y-(this.hei/2)+this.rad/2+this.pad, this.pos.y+(this.hei/2)-this.rad/2-this.pad)
+                this.xPos = this.pos.x
+
+                this.bgChance = fxrand()
+                if(this.bgChance < 0.1) {
+                    p.fill(this.oppCol)
+                    p.noStroke()
+                    p.rectMode(CENTER)
+                    p.rect(this.xPos, this.yPos, this.rad*1.1, this.rad*1.1)
+                }
+                this.fillChance = fxrand()
+                if(this.fillChance < 0.5) {
+                    p.fill(this.col)
+                    p.noStroke()
+                } else {
+                    p.stroke(this.col)
+                    p.strokeWeight(2)
+                    p.noFill()
+                }
+                
+                
+                randShape(this.xPos, this.yPos, this.rad, this.decider)
+            }
+        }
+    }
+    
+    showLinesMeet() {
+        this.dir = 2
+        this.wt = randomVal(5, (this.shortSide-padding)/5)
+        if(cornerRatio < 0.25) {
+            p.strokeCap(SQUARE)
+        } else {
+            p.strokeCap(ROUND)
+        }
+        
+        
+        
+        if (this.dir == 1) {
+            this.numLines = ((this.hei-padding)/(this.wt)/2)
+            this.xA = this.pos.x-this.wid/2+padding/2
+            this.xB = this.pos.x+this.wid/2-padding/2
+            for(let i = 0; i < this.numLines; i++) {
+                p.stroke(this.col)
+                this.yPos = map(i, 0, this.numLines, this.pos.y-this.hei/2+padding/4, this.pos.y+this.hei/2-padding/4)
+                meetLineH(this.xA, this.yPos, this.xB, this.yPos, this.wt)
+            }
+            
+        } else if(this.dir == 2) {
+            this.numLines = ((this.wid-padding)/(this.wt)/2)
+            this.yA = this.pos.y-this.hei/2+padding/2
+            this.yB = this.pos.y+this.hei/2-padding/2
+            for(let i = 0; i < this.numLines; i++) {
+                p.stroke(this.col)
+                this.xPos = map(i, 0, this.numLines, this.pos.x-this.wid/2+padding/4, this.pos.x+this.wid/2-padding/4)
+                meetLineV(this.xPos, this.yA, this.xPos, this.yB, this.wt)
+            }
+        }
+    }
+
+    showTextCirc() {
+        textCirc(this.pos.x, this.pos.y, this.shortSide, randomVal(0.5, 0.8))
+    }
+
+    showShapeGrad() {
+        this.filled = randBool()
+        if(this.filled == true) {
+            p.fill(this.col)
+            p.noStroke()
+        } else {
+            p.stroke(this.col)
+            p.strokeWeight(randomVal(3, 6))
+            p.noFill()
+        }
+
+        shapeGrad(this.pos.x, this.pos.y, this.wid, this.hei, randomInt(2, 10), randomVal(0.1, 0.4), randomVal(0.5, 0.8), this.col, padding*0.4)
+    }
+
+    showOrgFlower() {
+        this.filled = randBool()
+        if(this.filled == true) {
+            p.fill(this.col)
+            p.noStroke()
+        } else {
+            p.stroke(this.col)
+            p.strokeWeight(randomVal(3, 6))
+            p.noFill()
+        }
+        orgFlower(this.pos.x, this.pos.y, this.wid-(padding/2), this.hei-(padding/2))
+    }
+}

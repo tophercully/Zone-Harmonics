@@ -1,6 +1,6 @@
 w= 1600
 h = 2000
-marg = w*0.025
+marg = 100
 
 willReadFrequently = true
 
@@ -20,8 +20,37 @@ pxSize = url.searchParams.get('size')
 
 //declarations
 angs = []
+blocks = []
+colArray = [frameCol, truePal[0]]
+colNum = randomInt(0, 1)
+colA = colArray[colNum]
+colB = colArray[1-colNum]
+aspects = []
 
 //parameters
+printMess = fxrand()
+
+numDivs = randomInt(2, 10)
+totalSects = numDivs+1
+lineWtC = randomVal(5, 40)
+
+flowerExpo = randomVal(0.1, 0.5)
+flowerMidPt = randomVal(0.1, 0.5)
+flowerPetals = randomInt(4, 8)
+
+lineWt = 1 - randomVal(0.5, 0.1)
+cornerRatio = randomVal(0.0, 0.5)//0.2
+sculptorStartRatio = randomVal(0.1, 1)
+sculptExpo = 0.5//randomVal(0.5, 5)
+stretchMin = 200//randomInt(30, 70)
+
+bgType = randomInt(1, 4)
+
+//weighing one direction in x or y, under 1 is right/down, above is left/up
+sectWeightX = randomVal(0.1, 10)
+sectWeightY = randomVal(0.1, 10)
+
+
 
 function setup() {
   var isMobile = false; //initiate as false
@@ -41,6 +70,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 
   p = createGraphics(w, h)
   c = createGraphics(w, h)
+  b = createGraphics(w, h)
 
   l1 = createGraphics(w, h)
   l2 = createGraphics(w, h)
@@ -50,42 +80,116 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
   noLoop()
   p.noLoop()
   c.noLoop()
+
+
+  padding = constrain((w/(numDivs+2))-(lineWt/2), 0, w/2)
 }
 
 function draw() {
   background(bgc)
   c.background('white')
+  b.background('white')
   p.background(bgc)
   l1.background(bgc)
 
-  //Sketch
-  // arcRing(w/2, h/2, 500, 500, 100)
-  // arcRing(w/2, h/2, 1000, 1000, 200)
+  //Build our background Major Composition layer
+  b.fill('black')
+  b.stroke('white')
+  b.strokeWeight(10)
+  // b.circle(randomVal(0, w), randomVal(0, h), w)
+  // numShapes = randomInt(1, 5)
+  // for(let i = 0; i < numShapes; i++) {
+  //   here = createVector(randomVal(0, w), randomVal(0, h))
+  //   if(bgType == 1) {
+  //     bgFlower(here.x, here.y, randomVal(w/4, w)) 
+  //   } else if(bgType == 2) {
+  //     b.circle(here.x, here.y, randomVal(w/4, w))
+  //   } else if(bgType == 3) {
+  //     bgTri(here.x, here.y, randomVal(w/4, w))
+  //   } else if(bgType == 4) {
+  //     sz = randomVal(w/4, w)
+  //     bgOrgFlower(here.x, here.y, sz, sz)
+  //   }
+  // }
+  
 
-  // arcRing2(w/2, h/2, 1000, 1000, 200)
-
-  // c.stroke('white')
-  // cutter(255)
-  // cutter(100)
-  for(let i = 0; i < 10; i++) {
+  
+  //Build the subdivided grid
+  for(let i = 0; i < numDivs; i++) {
     dir = fxrand()
+    
     if(dir < 0.5) {
       newSectionVert()
     } else {
       newSectionHor()
     }
+  }
+  //Fill the array with Block objects
+  blockFinder()
+
+  //bg builder
+  if(bgType == 1) {
+    rayBG()
+  } else if(bgType == 2) {
+    concentricBG()
+  } else if(bgType == 3) {
+    mandalaBG()
+  } else if(bgType == 4) {
+    checkerBG()
+  }
+  
+  
+  //Fill those Block objects with patterns/modules
+  for(let i = 0; i < blocks.length-1; i++) {
+    // p.strokeWeight(3)
+    // blocks[i].showLines()
+    if(i < 2) {
+      blocks[i].showHeader()
+    } else {
+      if(blocks[i].bar == true) {
+        decider = randomInt(1, 4) 
+        if(decider == 1) {
+          blocks[i].showTextBox()
+        } else if(decider == 2) {
+          blocks[i].showCircRow()
+        } else if(decider == 3) {
+          blocks[i].showLinesMeet()
+        } else if(decider == 4) {
+          blocks[i].showRect()
+        }
+      } else {
+        decider = randomInt(1, 4) 
+        if(decider == 1) {
+          blocks[i].showTextBox()
+        } else if(decider == 2) {
+          blocks[i].showTextCirc()
+        } else if(decider == 3) {
+          blocks[i].showLinesMeet()
+        } else if(decider == 4) {
+          blocks[i].showShapeGrad()
+        } 
+      }
+    }
+    slatFilter(blocks[i].pos.x, blocks[i].pos.y, blocks[i].wid, blocks[i].hei)
     
   }
-
+  // p.background('white')
+  // obj = new Glyph(w/2, h/2, w/2, h/2, frameCol, 0.0)
+  // obj.showLineGlyph()
+  // orgFlower(w/2, h/2, w/2, h/2)
+  // slatFilter(w/2, h/2, w, h)
 
 
   //Post processing
   //  copy(p, 0, 0, w, h, 0, 0, w, h)
    bgc = color(bgc)
+   accCol = color(truePal[1])
    shader(shade)
    shade.setUniform("u_resolution", [w, h]);
-   shade.setUniform("p", c);
+   shade.setUniform("p", p);
    shade.setUniform("c", c);
+   shade.setUniform("b", b);
+   shade.setUniform("printMess", printMess);
    shade.setUniform("l1", l1);
    shade.setUniform("l2", l2);
    shade.setUniform("seed", randomVal(0, 10));
@@ -95,6 +199,11 @@ function draw() {
      bgc.levels[1] / 255,
      bgc.levels[2] / 255,
    ]);
+   shade.setUniform("accCol", [
+    accCol.levels[0] / 255,
+    accCol.levels[1] / 255,
+    accCol.levels[2] / 255,
+  ]);
 
    rect(0, 0, w, h)
 

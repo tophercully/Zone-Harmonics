@@ -8,11 +8,14 @@ varying vec2 vTexCoord;
 //textures and uniforms from p5
 uniform sampler2D p;
 uniform sampler2D c;
+uniform sampler2D b;
+uniform float printMess;
 uniform sampler2D l1;
 uniform sampler2D l2;
 uniform vec2 u_resolution;
 uniform float seed;
 uniform vec3 bgc;
+uniform vec3 accCol;
 uniform float marg;
 
 float map(float value, float inMin, float inMax, float outMin, float outMax) {
@@ -25,7 +28,21 @@ float random (vec2 st) {
         43758.5453123);
 }
 
+vec3 adjustContrast(vec3 color, float value) {
+  return 0.5 + (1.0 + value) * (color - 0.5);
+}
+vec3 adjustExposure(vec3 color, float value) {
+  return (1.0 + value) * color;
+}
+vec3 adjustSaturation(vec3 color, float value) {
+  const vec3 luminosityFactor = vec3(0.2126, 0.7152, 0.0722);
+  vec3 grayscale = vec3(dot(color, luminosityFactor));
 
+  return mix(grayscale, color, 1.0 + value);
+}
+vec3 adjustBrightness(vec3 color, float value) {
+  return color + value;
+}
 
 float noise (in vec2 st) {
     vec2 i = floor(st);
@@ -49,6 +66,10 @@ float noise (in vec2 st) {
             (d - b) * u.x * u.y;
 }
 
+mat2 rotate(float angle){
+    return mat2(cos(angle),-sin(angle),sin(angle),cos(angle));
+}
+
 void main() {
   vec2 uv = vTexCoord*u_resolution;
   vec2 st = vTexCoord;
@@ -58,40 +79,90 @@ void main() {
   st.y = 1.0 - st.y;
 
   //form noise
-  st.xy += (random(st.xy)*0.001)-0.0005;
-  float warp = map(noise(seed+st.xy*5.0), 0.0, 1.0, -0.005, 0.005);
+  st.x += map(random(st.xy), 0.0, 1.0, -0.00025, 0.00025);
+  st.y += map(random(seed+st.xy), 0.0, 1.0, -0.00025, 0.00025);
+  float warp = map(noise(seed+st.xy*5.0), 0.0, 1.0, -0.01, 0.01);
   //st.xy += warp;
-  vec4 texC = texture2D(c, stB);
 
-  float lum = texC.r;
+  //Shrink to fit inside margins
+  float margX = marg;
+  float margY = margX*0.8;
+  st.x = map(st.x, 0.0, 1.0, -margX, 1.0+margX);
+  st.y = map(st.y, 0.0, 1.0, -marg, 1.0+marg);
+  stB.x = map(stB.x, 0.0, 1.0, -margX, 1.0+margX);
+  stB.y = map(stB.y, 0.0, 1.0, -marg, 1.0+marg);
+
+  //sample and offset by p and b
+  vec4 sampTex = texture2D(p, st);
+  vec4 sampTexB = texture2D(b, st);
+  float offset = 0.002*printMess;//0.0025;
+  //offset by p color
+  st.x += map(sampTex.r, 0.0, 1.0, -offset, offset);
+  st.y += map(sampTex.b, 0.0, 1.0, -offset, offset);
+  st.xy += 0.5;
+  st.xy *= rotate(map(sampTex.g, 0.0, 1.0, -0.00872665*printMess, 0.00872665*printMess));
+  st.xy -= 0.5;
+
+  //offset by b color
+  st.x += map(sampTexB.r, 0.0, 1.0, -offset, offset);
+  st.y += map(sampTexB.b, 0.0, 1.0, -offset, offset);
+  st.xy += 0.5;
+  st.xy *= rotate(map(sampTexB.g, 0.0, 1.0, -0.00872665*printMess, 0.00872665*printMess));
+  st.xy -= 0.5;
+
+  //warping
+  // float n = noise(seed+st.xy*1.0);
+  // st.y += map(n, 0.0, 1.0, 0.0, 0.1);
+  
+  vec3 accColMixed = mix(accCol, bgc, 0.1);
+  
   
   // st.x += map(lum, 0.0, 1.0, -0.025, 0.025);
 
 
   vec4 texP = texture2D(p, st);
-  vec4 texL1 = texture2D(l1, st);
-  vec4 texL2 = texture2D(l2, st);
-  
+  vec4 texC = texture2D(c, st);
+  vec4 texB = texture2D(b, stB);
 
+  float lum = texC.r;
+  //initialize bg 
+  vec3 bg = bgc.rgb;
+  bool isTile = false;
+  //if the tile is neither black nor white, its a tile we can draw to
+  if(texC.r != 0.0 && texC.r != 1.0) {
+    isTile = true;
+  } else {
+    isTile = false;
+  }
+  //if its a tile we can draw on and it's black on texB, the bg layer is accCol
+  if(isTile == true && texB.r != 1.0) {
+    
+    bg.rgb = accColMixed.rgb;
+  }
   
 
   //color noise
-  float noiseGray = random(st.xy)*0.25;
+  float noiseGray = map(random(st.xy), 0.0, 1.0, -0.05, 0.05);
 
   vec3 color = vec3(0.0);
   vec3 final = vec3(0.0);
   color = vec3(texP.r, texP.g, texP.b);
-  if(lum < 0.5) {
-    color = texL1.rgb;
+  
+  if(color.rgb == bgc.rgb) {
+    color.rgb = bg.rgb;
+  } else {
+    color = adjustContrast(color, 0.5);
   }
+  // color.rgb = bg.rgb;
+
+
   //Draw margin
-  float margX = marg;
-  float margY = margX*0.8;
-  if(stB.x < margX || stB.x > 1.0-margX || stB.y < margY || stB.y > 1.0-margY) {
+  if(stB.x < 0.0|| stB.x > 1.0 || stB.y < 0.0 || stB.y > 1.0) {
     color = vec3(bgc.r, bgc.g, bgc.b);
   }
-
-  color = texP.rgb;
-
-  gl_FragColor = vec4(color+noiseGray, 1.0);
+  
+  // color = texB.rgb;
+  color+= noiseGray;
+  
+  gl_FragColor = vec4(color, 1.0);
 }
