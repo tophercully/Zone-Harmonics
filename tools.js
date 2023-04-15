@@ -1005,3 +1005,17 @@ function checkerBG() {
     }
   }
 }
+
+function dotBG() {
+  dens = 1000
+  b.noStroke()
+  for(let i = 0; i < dens; i++) {
+    filled = randBool(0.5) 
+    if(filled == true) {
+      b.fill('black')
+    } else {
+      b.fill('white')
+    }
+    b.circle(randomVal(0, w), randomVal(0, h), 100)
+  }
+}

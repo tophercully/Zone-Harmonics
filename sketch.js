@@ -82,7 +82,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
   c.noLoop()
 
 
-  padding = constrain((w/(numDivs+2))-(lineWt/2), 0, w/2)
+  padding = constrain((w/(numDivs+3))-(lineWt/2), 0, w/2)
 }
 
 function draw() {
@@ -96,23 +96,6 @@ function draw() {
   b.fill('black')
   b.stroke('white')
   b.strokeWeight(10)
-  // b.circle(randomVal(0, w), randomVal(0, h), w)
-  // numShapes = randomInt(1, 5)
-  // for(let i = 0; i < numShapes; i++) {
-  //   here = createVector(randomVal(0, w), randomVal(0, h))
-  //   if(bgType == 1) {
-  //     bgFlower(here.x, here.y, randomVal(w/4, w)) 
-  //   } else if(bgType == 2) {
-  //     b.circle(here.x, here.y, randomVal(w/4, w))
-  //   } else if(bgType == 3) {
-  //     bgTri(here.x, here.y, randomVal(w/4, w))
-  //   } else if(bgType == 4) {
-  //     sz = randomVal(w/4, w)
-  //     bgOrgFlower(here.x, here.y, sz, sz)
-  //   }
-  // }
-  
-
   
   //Build the subdivided grid
   for(let i = 0; i < numDivs; i++) {
@@ -128,15 +111,16 @@ function draw() {
   blockFinder()
 
   //bg builder
-  if(bgType == 1) {
-    rayBG()
-  } else if(bgType == 2) {
-    concentricBG()
-  } else if(bgType == 3) {
-    mandalaBG()
-  } else if(bgType == 4) {
-    checkerBG()
-  }
+  // if(bgType == 1) {
+  //   rayBG()
+  // } else if(bgType == 2) {
+  //   concentricBG()
+  // } else if(bgType == 3) {
+  //   mandalaBG()
+  // } else if(bgType == 4) {
+  //   checkerBG()
+  // }
+  dotBG()
   
   
   //Fill those Block objects with patterns/modules
@@ -169,6 +153,10 @@ function draw() {
           blocks[i].showShapeGrad()
         } 
       }
+    }
+    cornOrn = randBool(0.3) 
+    if(cornOrn == true) {
+      blocks[i].cornerOrnament()
     }
     slatFilter(blocks[i].pos.x, blocks[i].pos.y, blocks[i].wid, blocks[i].hei)
     

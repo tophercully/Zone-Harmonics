@@ -77,6 +77,7 @@ void main() {
 
   //flip the upside down image
   st.y = 1.0 - st.y;
+  stB.y = 1.0 - stB.y;
 
   //form noise
   st.x += map(random(st.xy), 0.0, 1.0, -0.00025, 0.00025);

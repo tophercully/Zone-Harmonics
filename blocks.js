@@ -29,6 +29,15 @@ class Block {
         } 
         this.corner = this.shortSide*cornerRatio
         this.decider = randomInt(1, 7)
+        //for the corner ornaments
+        this.cornerR = randomVal(this.shortSide*0.1, this.shortSide*0.2)
+        this.cornAdj = this.cornerR*randomVal(0.5, 1)
+        this.tl = createVector(x-wid/2+this.cornAdj, y-hei/2+this.cornAdj)
+        this.tr = createVector(x+wid/2-this.cornAdj, y-hei/2+this.cornAdj)
+        this.br = createVector(x+wid/2-this.cornAdj, y+hei/2-this.cornAdj)
+        this.bl = createVector(x-wid/2+this.cornAdj, y+hei/2-this.cornAdj)
+        this.corners = [this.tr, this.tl, this.br, this.bl]
+        this.theCorner = this.corners[randomInt(0, 3)]
     }
 
     removeOption() {
@@ -199,5 +208,25 @@ class Block {
             p.noFill()
         }
         orgFlower(this.pos.x, this.pos.y, this.wid-(padding/2), this.hei-(padding/2))
+    }
+
+    cornerOrnament() {
+        this.filled = randBool()
+        this.bgChance = fxrand()
+        if(this.bgChance < 0.1) {
+            p.fill(this.oppCol)
+            p.noStroke()
+            p.rectMode(CENTER)
+            p.rect(this.theCorner.x, this.theCorner.y, this.cornerR)
+        }
+        if(this.filled == true) {
+            p.fill(this.col)
+            p.noStroke()
+        } else {
+            p.stroke(this.col)
+            p.strokeWeight(randomVal(3, 6))
+            p.noFill()
+        }
+        randShape(this.theCorner.x, this.theCorner.y, this.cornerR, this.decider)
     }
 }
