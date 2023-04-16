@@ -165,6 +165,8 @@ void main() {
     color.rgb = bg.rgb;
   } else {
     color = adjustContrast(color, 0.5);
+    color = adjustSaturation(color, 1.0);
+
   }
   // color.rgb = bg.rgb;
 
