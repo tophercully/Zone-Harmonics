@@ -93,10 +93,35 @@ void main() {
   stB.x = map(stB.x, 0.0, 1.0, -margX, 1.0+margX);
   stB.y = map(stB.y, 0.0, 1.0, -marg, 1.0+marg);
 
-  //sample and offset by p and b
+
+  //textures to sample from and manipulate st
   vec4 sampTex = texture2D(p, st);
   vec4 sampTexB = texture2D(b, st);
-  float offset = 0.002*printMess;//0.0025;
+  vec4 sampTexC = texture2D(c, st);
+
+  //initialize bg 
+  vec3 bg = bgc.rgb;
+  bool isTile = false;
+  //if the tile is neither black nor white, its a tile we can draw to
+  if(sampTexC.r != 0.0 && sampTexC.r != 1.0) {
+    isTile = true;
+  } else {
+    isTile = false;
+  }
+  //if its a tile we can draw on and it's black on texB, the bg layer is accCol
+  vec3 accColMixed = mix(accCol, bgc, 0.1);
+  if(isTile == true && sampTexB.r != 1.0) {
+    bg.rgb = accColMixed.rgb;
+  }
+  //sample and offset by p and b
+  //offset is lessened on tiles with bg to reduce visual noise
+  float offset = 0.0;
+  if(isTile == true) {
+    offset = 0.0005*printMess;
+  } else {
+    offset = 0.002*printMess;
+  }
+  //0.0025;
   //offset by p color
   st.x += map(sampTex.r, 0.0, 1.0, -offset, offset);
   st.y += map(sampTex.b, 0.0, 1.0, -offset, offset);
@@ -115,7 +140,7 @@ void main() {
   // float n = noise(seed+st.xy*1.0);
   // st.y += map(n, 0.0, 1.0, 0.0, 0.1);
   
-  vec3 accColMixed = mix(accCol, bgc, 0.1);
+ 
   
   
   // st.x += map(lum, 0.0, 1.0, -0.025, 0.025);
@@ -125,21 +150,8 @@ void main() {
   vec4 texC = texture2D(c, st);
   vec4 texB = texture2D(b, stB);
 
-  float lum = texC.r;
-  //initialize bg 
-  vec3 bg = bgc.rgb;
-  bool isTile = false;
-  //if the tile is neither black nor white, its a tile we can draw to
-  if(texC.r != 0.0 && texC.r != 1.0) {
-    isTile = true;
-  } else {
-    isTile = false;
-  }
-  //if its a tile we can draw on and it's black on texB, the bg layer is accCol
-  if(isTile == true && texB.r != 1.0) {
-    
-    bg.rgb = accColMixed.rgb;
-  }
+
+
   
 
   //color noise

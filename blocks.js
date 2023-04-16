@@ -15,7 +15,7 @@ class Block {
             this.col = this.colA
             this.oppCol = this.colB
         }
-        console.log(this.col)
+        this.bgChoiceOff = randomInt(0, 1)
         this.aspects = [this.wid, this.hei]
         this.shortSide = min(this.aspects)
         this.longSide = max(this.aspects)
@@ -29,8 +29,9 @@ class Block {
         } 
         this.corner = this.shortSide*cornerRatio
         this.decider = randomInt(1, 7)
+
         //for the corner ornaments
-        this.cornerR = randomVal(this.shortSide*0.1, this.shortSide*0.2)
+        this.cornerR = randomVal(this.shortSide*0.1, this.shortSide*0.3)
         this.cornAdj = this.cornerR*randomVal(0.5, 1)
         this.tl = createVector(x-wid/2+this.cornAdj, y-hei/2+this.cornAdj)
         this.tr = createVector(x+wid/2-this.cornAdj, y-hei/2+this.cornAdj)
@@ -43,7 +44,7 @@ class Block {
     removeOption() {
         c.rectMode(CENTER)
         this.bgLayer = randBool(0.5)
-        if(this.bgLayer == true) {
+        if((blocksFound+this.bgChoiceOff)%2 == 0) {
             c.fill(200)
         } else {
             c.fill('black')
@@ -228,5 +229,21 @@ class Block {
             p.noFill()
         }
         randShape(this.theCorner.x, this.theCorner.y, this.cornerR, this.decider)
+    }
+
+    arrowLine() {
+        p.stroke(this.col)
+        p.strokeWeight(10)
+        if(this.wid > this.hei) {
+            this.vert = false
+        } else {
+            this.vert = true
+        }
+        if(this.vert = true) {
+            arrowLine(this.pos.x, this.pos.y-(this.hei/2)+padding/2, this.pos.x, this.pos.y+(this.hei/2)-padding/2, this.wid-(padding/2))
+        } else {
+            arrowLine(this.pos.x-(this.wid/2)+padding/2, this.pos.y, this.pos.x+(this.wid/2)-padding/2, this.pos.y, this.hei-(padding/2))
+        }
+
     }
 }

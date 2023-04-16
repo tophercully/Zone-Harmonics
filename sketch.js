@@ -1,6 +1,6 @@
 w= 1600
 h = 2000
-marg = 100
+marg = 10//randomVal(10, 200)
 
 willReadFrequently = true
 
@@ -38,13 +38,15 @@ flowerExpo = randomVal(0.1, 0.5)
 flowerMidPt = randomVal(0.1, 0.5)
 flowerPetals = randomInt(4, 8)
 
+glyphType = randomInt(1, 2)
 lineWt = 1 - randomVal(0.5, 0.1)
 cornerRatio = randomVal(0.0, 0.5)//0.2
 sculptorStartRatio = randomVal(0.1, 1)
 sculptExpo = 0.5//randomVal(0.5, 5)
 stretchMin = 200//randomInt(30, 70)
 
-bgType = randomInt(1, 4)
+bgType = randomInt(1, 5)
+doubleBG = randBool(0.2)
 
 //weighing one direction in x or y, under 1 is right/down, above is left/up
 sectWeightX = randomVal(0.1, 10)
@@ -111,16 +113,28 @@ function draw() {
   blockFinder()
 
   //bg builder
-  // if(bgType == 1) {
-  //   rayBG()
-  // } else if(bgType == 2) {
-  //   concentricBG()
-  // } else if(bgType == 3) {
-  //   mandalaBG()
-  // } else if(bgType == 4) {
-  //   checkerBG()
-  // }
-  dotBG()
+  if(bgType == 1) {
+    rayBG()
+  } else if(bgType == 2) {
+    concentricBG()
+  } else if(bgType == 3) {
+    mandalaBG()
+  } else if(bgType == 4) {
+    checkerBG()
+  } else if(bgType == 5) {
+    gridBG()
+  }
+
+  if(doubleBG == true) {
+    decider = randomInt(1, 2)
+    if(decider == 1) {
+      checkerBG()
+    } else if( decider == 2) {
+      gridBG()
+    }
+  }
+  
+  // dotBG()
   
   
   //Fill those Block objects with patterns/modules
@@ -131,7 +145,7 @@ function draw() {
       blocks[i].showHeader()
     } else {
       if(blocks[i].bar == true) {
-        decider = randomInt(1, 4) 
+        decider = randomInt(1, 5) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -140,6 +154,8 @@ function draw() {
           blocks[i].showLinesMeet()
         } else if(decider == 4) {
           blocks[i].showRect()
+        } else if(decider == 5) {
+          blocks[i].arrowLine()
         }
       } else {
         decider = randomInt(1, 4) 
@@ -152,16 +168,22 @@ function draw() {
         } else if(decider == 4) {
           blocks[i].showShapeGrad()
         } 
+
+        cornOrn = randBool(0.3) 
+        if(cornOrn == true) {
+          blocks[i].cornerOrnament()
+        }
       }
     }
-    cornOrn = randBool(0.3) 
-    if(cornOrn == true) {
-      blocks[i].cornerOrnament()
-    }
+    
     slatFilter(blocks[i].pos.x, blocks[i].pos.y, blocks[i].wid, blocks[i].hei)
     
   }
+
+
   // p.background('white')
+  // p.stroke('black')
+  // arrowLine(randomVal(0, w), randomVal(0, h), randomVal(0, w), randomVal(0, h), 100)
   // obj = new Glyph(w/2, h/2, w/2, h/2, frameCol, 0.0)
   // obj.showLineGlyph()
   // orgFlower(w/2, h/2, w/2, h/2)

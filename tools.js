@@ -596,7 +596,12 @@ function textBoxNew(xC, yC, wid, hei, numRows, spacing, textDens, color, edgePad
         obj = new Glyph(posX, posY+(cellH/2), cellW*pad, min([fontW, fontSz])*pad, color, edgePad/2)
         numStrokes = randomInt(3, 10)
         for(let i = 0; i < numStrokes; i++) {
-          obj.showLineGlyph()
+          if(glyphType == 1) {
+            obj.showLineGlyph()
+          } else {
+            obj.showBlockGlyph()
+          }
+          
         }
         // glyph(posX, posY+(cellH/2), cellW*pad, cellH*pad, color)
       // scriptGlyph(posX, posY+(cellH/2), cellW*pad, cellH*pad, 10, 0.2, 1, frameCol, 0.1)
@@ -915,13 +920,23 @@ function slatFilter(x, y, wid, hei) {
   vert = true//randBool()
   dens = 200//randomInt(10, 100)
   if(vert == true) {
-    wt = (hei/dens)/4
+    wt = constrain((hei/dens)/4, 0.25, 100)
     b.stroke(bgc)
     b.strokeWeight(wt)
     b.strokeCap(SQUARE)
     for(let i = 0; i < dens; i++) {
       yC = map(i, 0, dens, y-hei/2, y+hei/2)
       b.line(x-wid/2, yC, x+wid/2, yC)
+    }
+  }
+  if(vert == false) {
+    wt = (wid/dens)/4
+    b.stroke(bgc)
+    b.strokeWeight(wt)
+    b.strokeCap(SQUARE)
+    for(let i = 0; i < dens; i++) {
+      xC = map(i, 0, dens, x-wid/2, x+wid/2)
+      b.line(xC, y-hei/2, xC, y+hei/2)
     }
   }
   
@@ -986,36 +1001,103 @@ function scatterBG() {
 
 function checkerBG() {
   dens = randomInt(8, 30)
+  off = randomInt(0, 1)
   cellW = w/dens
   cellH = h/dens
   b.rectMode(CENTER)
-  b.stroke('black')
-  b.strokeWeight(5)
   b.noFill()
   for(let y = 0; y < dens; y++) {
+    if((y+off)%2 == 0) {
+      xMod = 1
+    } else {
+      xMod = 0
+    }
     for(let x = 0; x < dens; x++) {
-      xSine = sin(x*180)
-      ySine = sin(y*180)
-      // if(ySine > 0.0 || xSine > 0.0) {
-      //   b.fill('white')
-      // } else {
-      //   b.fill('black')
-      // }
+      if((x+xMod)%2 == 0) {
+        b.noFill()
+      } else {
+        b.fill('black')
+      }
       b.rect(x*cellW+(cellW/2), y*cellH+(cellH/2), cellW, cellH)
     }
   }
 }
 
+function gridBG() {
+  dens = randomInt(8, 35)
+  cellW = w/dens
+  cellH = h/dens
+  b.rectMode(CENTER)
+  b.noFill()
+  b.stroke('black')
+  b.strokeWeight(3)
+  for(let y = 0; y < dens; y++) {
+    for(let x = 0; x < dens; x++) {
+      b.rect(x*cellW+(cellW/2), y*cellH+(cellH/2), cellW, cellH)
+  }
+}
+}
+
 function dotBG() {
   dens = 1000
+  sz = randomVal(100, 800)
   b.noStroke()
   for(let i = 0; i < dens; i++) {
     filled = randBool(0.5) 
+    here = createVector(randomVal(0, w), randomVal(0, h))
     if(filled == true) {
       b.fill('black')
     } else {
       b.fill('white')
     }
-    b.circle(randomVal(0, w), randomVal(0, h), 100)
+
+    bgBlob(here.x, here.y, sz)
+  }
+}
+
+function bgBlob(x, y, r) {
+  noiseMax = 1
+  b.beginShape()
+  for(let i = 0; i < 360; i++) {
+    xOff = (map(cos(i), -1, 1, 0, noiseMax))
+    yOff = (map(sin(i), -1, 1, 0, noiseMax))
+    n = noise(xOff, yOff)
+    rad= map(n, 0, 1, r*0.5, r)
+    xC = cos(i)*rad 
+    yC = sin(i)*rad 
+    b.vertex(x+xC, y+yC)
+  }
+  b.endShape(CLOSE)
+}
+
+function arrowLine(xA, yA, xB, yB, wt) {
+  dens = randomVal(3, 20)
+  
+  dir = randomInt(0, 1)
+  here = createVector(xA, yA)
+  there = createVector(xB, yB)
+  length = here.dist(there)
+  p.strokeWeight((length/dens)/10)
+  ang = angBetween(here.x, here.y, there.x, there.y)+(dir*180)
+  arrowLength = length/20
+  for(let i = 1-dir; i < dens-(1-dir); i++) {
+    spawned = randBool(0.8)
+    if(spawned == true) {
+      x = map(i, 0, dens, xA, xB)
+      y = map(i, 0, dens, yA, yB)
+
+      p.push()
+      p.translate(x, y)
+      p.rotate(ang)
+      p.noFill()
+      p.beginShape()
+      p.vertex(-arrowLength/4, -(wt/2))
+      p.vertex(arrowLength/4, 0)
+      p.vertex(-arrowLength/4, wt/2)
+      p.endShape()
+      p.pop()
+    }
+    
+
   }
 }
