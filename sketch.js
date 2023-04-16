@@ -1,6 +1,6 @@
 w= 1600
 h = 2000
-marg = 10//randomVal(10, 200)
+marg = randomVal(10, 200)
 
 willReadFrequently = true
 
