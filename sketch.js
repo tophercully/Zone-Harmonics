@@ -141,7 +141,7 @@ function draw() {
   for(let i = 0; i < blocks.length-1; i++) {
     // p.strokeWeight(3)
     // blocks[i].showLines()
-    if(i < 2) {
+    if(i < 1) {
       blocks[i].showHeader()
     } else {
       if(blocks[i].bar == true) {

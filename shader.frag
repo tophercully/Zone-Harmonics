@@ -109,7 +109,7 @@ void main() {
     isTile = false;
   }
   //if its a tile we can draw on and it's black on texB, the bg layer is accCol
-  vec3 accColMixed = mix(accCol, bgc, 0.1);
+  vec3 accColMixed = mix(accCol, bgc, 0.0);
   if(isTile == true && sampTexB.r != 1.0) {
     bg.rgb = accColMixed.rgb;
   }
@@ -164,7 +164,7 @@ void main() {
   if(color.rgb == bgc.rgb) {
     color.rgb = bg.rgb;
   } else {
-    color = adjustContrast(color, 0.5);
+    color = adjustContrast(color, -0.5);
     color = adjustSaturation(color, 1.0);
 
   }

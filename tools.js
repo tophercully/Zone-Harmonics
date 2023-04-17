@@ -383,22 +383,22 @@ function blockFinder() {
       leftCheck = colCheck
       rightCheck = colCheck
 
-      while (topCheck[0] != 0) {
+      while (topCheck[0] == 255) {
         topDis-=1
         topCheck = c.get(here.x, here.y+topDis)
       }
 
-      while (botCheck[0] != 0) {
+      while (botCheck[0] == 255) {
         botDis++
         botCheck = c.get(here.x, here.y+botDis)
       }
 
-      while (leftCheck[0] != 0) {
+      while (leftCheck[0] == 255) {
         leftDis-=1
         leftCheck = c.get(here.x+leftDis, here.y)
       }
 
-      while (rightCheck[0] != 0) {
+      while (rightCheck[0] == 255) {
         rightDis++
         rightCheck = c.get(here.x+rightDis, here.y)
       }

@@ -223,7 +223,7 @@ const testI = ["#edc937","#E93D18"]
 const testJ = ["#2F81BC", ]
 const testK = ["#E8BB27", "#C14736"]
 
-const fullColor = ["#1f46c8","#EF3C19", "#f6b81a", "#4FA55E", '#b44fd0', "#EE7140", '#FF48B0',]
+const fullColor = ["#1f46c8","#EF3C19", "#f1ba2f", "#4FA55E", '#b44fd0', "#ea5920", '#FF48B0',]
 
 const riso2 = [
   '#FF48B0',
