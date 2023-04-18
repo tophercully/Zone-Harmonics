@@ -110,6 +110,7 @@ void main() {
   }
   //if its a tile we can draw on and it's black on texB, the bg layer is accCol
   vec3 accColMixed = mix(accCol, bgc, 0.0);
+  accColMixed = accCol;//adjustSaturation(accCol, -0.25);
   if(isTile == true && sampTexB.r != 1.0) {
     bg.rgb = accColMixed.rgb;
   }
@@ -161,22 +162,33 @@ void main() {
   vec3 final = vec3(0.0);
   color = vec3(texP.r, texP.g, texP.b);
   
+  
   if(color.rgb == bgc.rgb) {
     color.rgb = bg.rgb;
+  } else if(color.rgb == vec3(1.0)) {
+    color = adjustContrast(color, -0.1);
   } else {
+    color = adjustContrast(color, 1.0);
     color = adjustContrast(color, -0.5);
-    color = adjustSaturation(color, 1.0);
-
+    // color = adjustSaturation(color, -0.2);
+    // color = adjustContrast(color, -0.5);
   }
   // color.rgb = bg.rgb;
-
+  
 
   //Draw margin
   if(stB.x < 0.0|| stB.x > 1.0 || stB.y < 0.0 || stB.y > 1.0) {
     color = vec3(bgc.r, bgc.g, bgc.b);
   }
+
+  if(color == vec3(0.0)) {
+    color = adjustContrast(color, -0.3);
+  } 
   
-  // color = texB.rgb;
+
+
+  
+  // color = texP.rgb;
   color+= noiseGray;
   
   gl_FragColor = vec4(color, 1.0);

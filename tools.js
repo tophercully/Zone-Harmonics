@@ -115,7 +115,7 @@ function updateURLParameter(url, param, paramVal)
 }
 
 function randColor() {
-  return chroma(truePal[randomInt(0, truePal.length-1)]).hex()
+  return truePal[randomInt(0, truePal.length-1)]
 }
 
 function randBool(chanceTrue) {
@@ -228,7 +228,9 @@ function newSectionVert() {
   //we've found no points yet
   ptFound = 0
   //run this while looking for a point
+  tries = 0
   while(ptFound == 0) {
+    
     //Find starting point
     xVal = randomVal(0, 1)
     yVal = randomVal(0, 1)
@@ -245,14 +247,14 @@ function newSectionVert() {
     // console.log(leftCheck[0])
 
     //move left over until it hits black
-    while(leftCheck[0] != 0) {
+    while(leftCheck[0] == 255) {
       leftDis-=1
       leftCheck = c.get(here.x+leftDis, here.y)
       // console.log('left is', leftCheck[0])
     }
   
     //move right over until it hits black
-    while(rightCheck[0] != 0) {
+    while(rightCheck[0] == 255) {
       rightDis++
       rightCheck = c.get(here.x+rightDis, here.y)
       // console.log('right is', leftCheck[0])
@@ -260,6 +262,10 @@ function newSectionVert() {
       if(colCheck[0] > 250 && rightDis > padding && abs(leftDis) > padding) {
         //tell loop we've found it
       ptFound++
+    }
+    tries++
+    if(tries > 100) {
+      return
     }
   }
   
@@ -311,14 +317,14 @@ function newSectionHor() {
     botCheck = colCheck
     // console.log(topCheck[0])
     //move top up until it hits black
-    while(topCheck[0] != 0) {
+    while(topCheck[0] == 255) {
       topDis-=1
       topCheck = c.get(here.x, here.y+topDis)
       // console.log('top is', topCheck[0])
     }
   
     //move bottom down until it hits black
-    while(botCheck[0] != 0) {
+    while(botCheck[0] == 255) {
       botDis++
       botCheck = c.get(here.x, here.y+botDis)
       // console.log('bot is', botCheck[0])
@@ -327,6 +333,11 @@ function newSectionHor() {
     if(colCheck[0] > 250 && botDis > padding && abs(topDis) > padding) {
       //tell loop we've found it
       ptFound++
+    }
+
+    tries++
+    if(tries > 100) {
+      return
     }
   }
   
@@ -711,7 +722,7 @@ function flower(x, y, r) {
     rModMod = map(pow(rMod, expo), 0, pow(1, expo), midPt, 1)
     xC = cos(i+initAng)*r/2*rModMod
     yC = sin(i+initAng)*r/2*rModMod
-    p.vertex(x+xC, y+yC)
+    p.curveVertex(x+xC, y+yC)
   }
   p.endShape(CLOSE)
 }
@@ -755,8 +766,18 @@ function asterisk(x, y, r) {
   }
 }
 
-function semiCirc() {
-
+function concentricCirc(x, y, r, col) {
+  p.noStroke()
+  numRings = randomInt(3, 8)
+  for(let i = 0; i < numRings; i++) {
+    if(i%2 ==0) {
+      p.fill(col)
+    } else {
+      p.fill(bgc)
+    }
+    rad = map(i, 0, numRings, r, r/numRings)
+    p.circle(x, y, rad)
+  }
 }
 
 function bgFlower(x, y, r, petalCount) {
@@ -775,7 +796,7 @@ function bgFlower(x, y, r, petalCount) {
     rModMod = map(pow(rMod, expo), 0, pow(1, expo), midPt, 1)
     xC = cos(i+initAng)*r/2*rModMod
     yC = sin(i+initAng)*r/2*rModMod
-    b.vertex(x+xC, y+yC)
+    b.curveVertex(x+xC, y+yC)
   }
   b.endShape(CLOSE)
 }
@@ -858,10 +879,28 @@ function bgOrgFlower(x, y, wid, hei) {
 
 }
 
-function randShape(x, y, r, decider) {
-  if(decider < 1) {
-    decider = randomInt(1, 7)
+function spiral(x, y, r) {
+  numSpins = randomVal(2, 5)
+  startAng = randomVal(0, 360)
+  p.noFill()
+  p.strokeWeight((r/numSpins)/10)
+  p.stroke(colNow)
+  p.beginShape()
+  for(let i = 0; i < 360*numSpins; i+=10) {
+    rad = map(i, 0, 360*numSpins, 0, r/2)
+    xC = cos(i+startAng)*rad 
+    yC = sin(i+startAng)*rad
+    p.vertex(x+xC, y+yC)
   }
+  p.endShape()
+
+}
+
+function randShape(x, y, r, decider, col) {
+  if(decider < 1) {
+    decider = randomInt(1, 9)
+  }
+
   if(decider == 1) {
     p.circle(x, y, r)
   } else if(decider == 2) {
@@ -877,7 +916,11 @@ function randShape(x, y, r, decider) {
     p.rect(x, y, r, r)
   } else if(decider == 7) {
     orgFlower(x, y, r, r)
-  }
+  } else if(decider == 8) {
+    concentricCirc(x, y, r, colNow)
+  } else if(decider == 9) {
+    spiral(x, y, r)
+  } 
 }
 
 function mandalaBG() {
@@ -917,7 +960,7 @@ function concentricBG() {
 }
 
 function slatFilter(x, y, wid, hei) {
-  vert = true//randBool()
+  vert = randBool()
   dens = 200//randomInt(10, 100)
   if(vert == true) {
     wt = constrain((hei/dens)/4, 0.25, 100)
@@ -1068,6 +1111,49 @@ function bgBlob(x, y, r) {
     b.vertex(x+xC, y+yC)
   }
   b.endShape(CLOSE)
+}
+function blob(x, y, r, inside) {
+  noiseMax = 1
+  p.beginShape()
+  for(let i = 0; i < 360; i++) {
+    xOff = (map(cos(i), -1, 1, 0, noiseMax))
+    yOff = (map(sin(i), -1, 1, 0, noiseMax))
+    n = noise(xOff, yOff)
+    rad= map(n, 0, 1, inside, r)
+    xC = cos(i)*rad 
+    yC = sin(i)*rad 
+    p.vertex(x+xC, y+yC)
+  }
+  p.endShape(CLOSE)
+}
+
+function cave(x, y, wid, hei) {
+  p.noFill()
+  p.stroke(colArray[randomInt(0, 1)])
+  noiseMax = randomVal(2, 4)
+  numLayers = randomInt(3, 6)
+  rInc = 1/numLayers
+  p.strokeWeight((wid/numLayers)/20)
+  phase = 0
+  
+  for(j = 0; j < numLayers; j++) {
+    
+    thisR = map(j, 0, numLayers, 1, 0)
+    inside = map(j, 0, numLayers, 1-rInc, 0)
+    p.beginShape()
+    for(let i = 0; i < 360; i++) {
+      xOff = (map(cos(i), -1, 1, 0, noiseMax))
+      yOff = (map(sin(i), -1, 1, 0, noiseMax))
+      n = noise(xOff, yOff, phase)
+      rad= map(n, 0, 1, inside, thisR)/2
+      xC = cos(i)*wid*rad
+      yC = sin(i)*hei*rad
+      p.vertex(x+xC, y+yC)
+    }
+    p.endShape(CLOSE)
+    phase += 10
+  }
+  
 }
 
 function arrowLine(xA, yA, xB, yB, wt) {

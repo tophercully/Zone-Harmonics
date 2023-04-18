@@ -28,7 +28,7 @@ class Block {
             this.bar = false
         } 
         this.corner = this.shortSide*cornerRatio
-        this.decider = randomInt(1, 7)
+        this.decider = randomInt(1, 9)
 
         //for the corner ornaments
         this.cornerR = randomVal(this.shortSide*0.1, this.shortSide*0.3)
@@ -44,7 +44,7 @@ class Block {
     removeOption() {
         c.rectMode(CENTER)
         this.bgLayer = randBool(0.5)
-        if((blocksFound+this.bgChoiceOff)%2 == 0) {
+        if(blocksFound < Math.floor(totalSects/2)) {
             c.fill(200)
         } else {
             c.fill('black')
@@ -111,7 +111,7 @@ class Block {
                 this.xPos = map(i, 0, this.num, this.pos.x-(this.wid/2)+this.rad/2+this.pad, this.pos.x+(this.wid/2)-this.rad/2-this.pad)
                 this.yPos = this.pos.y
                 
-                randShape(this.xPos, this.yPos, this.rad, this.decider)
+                randShape(this.xPos, this.yPos, this.rad, this.decider, this.col)
             }
         } else if(this.hei > this.wid) {
             this.r = this.wid
@@ -142,7 +142,7 @@ class Block {
                 }
                 
                 
-                randShape(this.xPos, this.yPos, this.rad, this.decider)
+                randShape(this.xPos, this.yPos, this.rad, this.decider, this.col)
             }
         }
     }
@@ -245,5 +245,58 @@ class Block {
             arrowLine(this.pos.x-(this.wid/2)+padding/2, this.pos.y, this.pos.x+(this.wid/2)-padding/2, this.pos.y, this.hei-(padding/2))
         }
 
+    }
+
+    showDashLine() {
+        p.stroke(this.col)
+        this.segs = randomInt(2, 20)
+        p.push()
+        p.strokeCap(SQUARE)
+        if(this.wid > this.hei) {
+            this.vert = false
+        } else {
+            this.vert = true
+        }
+        if(this.vert = true) {
+            this.chunk = (this.hei-padding)/this.segs
+            p.drawingContext.setLineDash([this.chunk, this.chunk])
+            p.strokeWeight(this.wid-padding)
+            p.line(this.pos.x, this.pos.y-(this.hei/2)+padding/2, this.pos.x, this.pos.y+(this.hei/2)-padding/2)
+        } else {
+            this.chunk = (this.wid-padding)/this.segs
+            p.drawingContext.setLineDash([this.chunk, this.chunk])
+            p.strokeWeight(this.hei-padding)
+            p.line(this.pos.x-(this.wid/2)+padding/2, this.pos.y, this.pos.x+(this.wid/2)-padding/2, this.pos.y)
+        }
+        p.pop()
+    }
+
+    showBez() {
+        this.numPts = randomInt(3, 15)
+        this.numLayers = randomInt(1, 4)
+        p.noStroke()
+        
+        for(let j = 0; j < this.numLayers; j++) {
+            if(j%2==0) {
+                p.fill(this.col)
+            } else {
+                p.fill(this.colB)
+            }
+            p.curveTightness(randomVal(0.0, 1.0))
+            p.beginShape()
+            for(let i = 0; i < this.numPts+2; i++) {
+                p.curveVertex(randomVal(this.pos.x-this.wid/2+padding/2, this.pos.x+this.wid/2-padding/2), randomVal(this.pos.y-this.hei/2+padding/2, this.pos.y+this.hei/2-padding/2))
+            }
+            p.endShape(CLOSE)
+        }
+        
+    }
+
+    showCave() {
+        p.push()
+        this.chunk = randomInt(10, 300)
+        p.drawingContext.setLineDash([this.chunk, this.chunk])
+        cave(this.pos.x, this.pos.y, this.wid-padding/2, this.hei-padding/2)
+        p.pop()
     }
 }

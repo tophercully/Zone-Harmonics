@@ -11,6 +11,8 @@ bgCols = [
   // "#242124", //raisin black
 ];
 
+bgColsB = ['black', 'white']
+
 bgNames = [
   "SeaShell",
   "Canvas",
@@ -24,8 +26,8 @@ bgNames = [
   "Raisin Black",
 ];
 //Background color parameters
-bgNum = randomInt(0, 2);
-bgc = bgCols[bgNum];
+bgNum = 1//randomInt(0, 1);
+bgc = bgColsB[bgNum];
 bgName = bgNames[bgNum];
 
 //Make a color that always contrasts bgc
@@ -174,12 +176,12 @@ const elliot = [
   "#2CA8C4",
   "#EE7140",
   "#289C5B",
-  "#F5E2CC",
-  "#161117"
+  // "#F5E2CC",
+  // "#161117"
 ]
 const vint = [
-  'black',
-  '#FDDEBD',
+  // 'black',
+  // '#FDDEBD',
   '#3255A4',
   '#62A8E5',
   '#FF8E91'
@@ -222,8 +224,28 @@ const testH = ["#2C4CB8","#EF3C19"]// so poppin
 const testI = ["#edc937","#E93D18"]
 const testJ = ["#2F81BC", ]
 const testK = ["#E8BB27", "#C14736"]
+const testL = ['#F57103', '#00598D', '#214C25'] //love this
+const testM = ['#08844E', '#EC2912', '#09a3e5']
+const testN = ['#AED577', '#CEACD4', '#AED577', '#CEACD4']
 
-const fullColor = ["#1f46c8","#EF3C19", "#f1ba2f", "#4FA55E", '#b44fd0', "#ea5920", '#FF48B0',]
+const fullColor = ["#1f46c8", "#44B8F5", "#EF3C19", "#FFEB00", "#4FA55E", '#b44fd0', "#ea5920", '#FF48B0', '#37cdb2']
+
+const palA = ["#44B8F5", "#EF3C19"]
+const palB = ["#1f46c8", "#EF3C19"]
+const palC = ["#44B8F5", "#FFEB00"]
+const palD = ["#1f46c8", "#FFEB00"]
+const palE = ["#4FA55E", "#EF3C19"]
+const palF = ["#4FA55E", "#b44fd0"]
+const palG = ["#44B8F5", "#FF48B0"]
+const palH = ["#4FA55E", "#FF48B0"]
+const palI = ["#FFEB00", "#EF3C19"]
+const palJ = ["#FFEB00", "#b44fd0"]
+const palK = ["#37cdb2", "#EF3C19"]
+const palL = ["#FFEB00", "#4FA55E"]
+const palM = ["#FFEB00", "#EF3C19"]
+const palN = ["#4FA55E", "#ea5920"]
+
+const combos = [palA, palB, palC, palD, palE, palF, palG, palH, palI, palJ, palK, palL, palM, palN]
 
 const riso2 = [
   '#FF48B0',
@@ -268,7 +290,7 @@ const palNames = [
 
 //Palette parameters
 palNum = randomInt(0, pals.length-1);
-pal = fullColor//pals[palNum];
+pal = elliot//pals[palNum];
 palName = palNames[palNum];
 
 console.log(palName)

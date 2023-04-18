@@ -1,6 +1,6 @@
 w= 1600
 h = 2000
-marg = randomVal(10, 200)
+marg = -5//randomVal(10, 400)
 
 willReadFrequently = true
 
@@ -21,18 +21,45 @@ pxSize = url.searchParams.get('size')
 //declarations
 angs = []
 blocks = []
-colArray = [frameCol, truePal[0]]
+colArray = [frameCol, chroma(truePal[0]).saturate(0).hex()]
 colNum = randomInt(0, 1)
 colA = colArray[colNum]
 colB = colArray[1-colNum]
 aspects = []
+accNum = 1
+accentCol = chroma(truePal[accNum]).saturate(0).hex()
+colDiff = chroma.contrast(truePal[0], accentCol)
+diffNeeded = 1.2
+console.log(colDiff)
+
+accFound = false
+if(colDiff > diffNeeded) {
+  accFound = true
+}
+tries = 0
+while(accFound == false) {
+  accNum++
+  accentCol = chroma(truePal[accNum]).saturate(0).hex()
+  
+  colDiff = chroma.contrast(truePal[0], accentCol)
+  console.log(colDiff)
+  if(colDiff > diffNeeded) {
+    accFound = true
+  }
+  if(accNum > truePal.length-2) {
+    accentCol = frameCol
+    accFound = true
+  }
+}
+// bgc = chroma(randColor()).saturate(-2).hex()
+bgc = chroma.mix(randColor(), 'white', 0.9).hex()
 
 //parameters
-printMess = fxrand()
+printMess = 1//fxrand()
 
-numDivs = randomInt(2, 10)
+numDivs = randomInt(3, 10)
 totalSects = numDivs+1
-lineWtC = randomVal(5, 40)
+lineWtC = 2//randomVal(5, 20)
 
 flowerExpo = randomVal(0.1, 0.5)
 flowerMidPt = randomVal(0.1, 0.5)
@@ -46,7 +73,7 @@ sculptExpo = 0.5//randomVal(0.5, 5)
 stretchMin = 200//randomInt(30, 70)
 
 bgType = randomInt(1, 5)
-doubleBG = randBool(0.2)
+doubleBG = randBool(0.1)
 
 //weighing one direction in x or y, under 1 is right/down, above is left/up
 sectWeightX = randomVal(0.1, 10)
@@ -141,11 +168,12 @@ function draw() {
   for(let i = 0; i < blocks.length-1; i++) {
     // p.strokeWeight(3)
     // blocks[i].showLines()
+    colNow = blocks[i].col
     if(i < 1) {
       blocks[i].showHeader()
     } else {
       if(blocks[i].bar == true) {
-        decider = randomInt(1, 5) 
+        decider = randomInt(1, 6) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -156,9 +184,11 @@ function draw() {
           blocks[i].showRect()
         } else if(decider == 5) {
           blocks[i].arrowLine()
+        } else if(decider == 6) {
+          blocks[i].showDashLine()
         }
       } else {
-        decider = randomInt(1, 4) 
+        decider = randomInt(1, 6) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -167,6 +197,10 @@ function draw() {
           blocks[i].showLinesMeet()
         } else if(decider == 4) {
           blocks[i].showShapeGrad()
+        } else if(decider == 5) {
+          blocks[i].showBez()
+        } else if(decider == 6) {
+          blocks[i].showCave()
         } 
 
         cornOrn = randBool(0.3) 
@@ -183,6 +217,7 @@ function draw() {
 
   // p.background('white')
   // p.stroke('black')
+  // cave(w/2, h/2, w/2, h/2)
   // arrowLine(randomVal(0, w), randomVal(0, h), randomVal(0, w), randomVal(0, h), 100)
   // obj = new Glyph(w/2, h/2, w/2, h/2, frameCol, 0.0)
   // obj.showLineGlyph()
@@ -193,7 +228,7 @@ function draw() {
   //Post processing
   //  copy(p, 0, 0, w, h, 0, 0, w, h)
    bgc = color(bgc)
-   accCol = color(truePal[1])
+   accCol = color(accentCol)
    shader(shade)
    shade.setUniform("u_resolution", [w, h]);
    shade.setUniform("p", p);
@@ -218,4 +253,8 @@ function draw() {
    rect(0, 0, w, h)
 
    fxpreview()
+  //  save("blockBatchE.png")
+  //  setTimeout(() => {
+  //   window.location.reload();
+  // }, "8000");
 }
