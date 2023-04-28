@@ -213,39 +213,17 @@ const overlook = ["#3d4d20","#ad0b08","#1d5473","#798b97","#edd2b7","#b76439","#
 
 const helmetFace = ["#617a5c","#a3ab86","#accbf9","#f3c9f4","#030305","#cfd9e3","#e3e4e8"]
 
-const testA = ["#142e70", "#f74d13"]
-const testB = ["#FF0000","#0093EE","#FF81F0"]
-const testC = ["#E1D8C4","#FEC85C","#4779BB"]
-const testD = ["#FF4736","#007822","#003CFF"]
-const testE = ["#efa738","#3796f0"] //LOVE
-const testF = ["#F56905", "#074EE5"] //also love
-const testG = ["#4FA55E", "#DC6311"]
-const testH = ["#2C4CB8","#EF3C19"]// so poppin
-const testI = ["#edc937","#E93D18"]
-const testJ = ["#2F81BC", ]
-const testK = ["#E8BB27", "#C14736"]
-const testL = ['#F57103', '#00598D', '#214C25'] //love this
-const testM = ['#08844E', '#EC2912', '#09a3e5']
-const testN = ['#AED577', '#CEACD4', '#AED577', '#CEACD4']
-
 const fullColor = ["#1f46c8", "#44B8F5", "#EF3C19", "#FFEB00", "#4FA55E", '#b44fd0', "#ea5920", '#FF48B0', '#37cdb2']
 
-const palA = ["#44B8F5", "#EF3C19"]
-const palB = ["#1f46c8", "#EF3C19"]
-const palC = ["#44B8F5", "#FFEB00"]
-const palD = ["#1f46c8", "#FFEB00"]
-const palE = ["#4FA55E", "#EF3C19"]
-const palF = ["#4FA55E", "#b44fd0"]
-const palG = ["#44B8F5", "#FF48B0"]
-const palH = ["#4FA55E", "#FF48B0"]
-const palI = ["#FFEB00", "#EF3C19"]
-const palJ = ["#FFEB00", "#b44fd0"]
-const palK = ["#37cdb2", "#EF3C19"]
-const palL = ["#FFEB00", "#4FA55E"]
-const palM = ["#FFEB00", "#EF3C19"]
-const palN = ["#4FA55E", "#ea5920"]
+comboA = ["#142e70", "#f74d13"]
+comboB = ["#efa738","#3796f0"] //LOVE
+comboC = ["#F56905", "#074EE5"] //also love
+comboD = ["#2C4CB8","#EF3C19"]// so poppin
+comboE = ['#F57103', '#00598D', '#214C25'] //love this
 
-const combos = [palA, palB, palC, palD, palE, palF, palG, palH, palI, palJ, palK, palL, palM, palN]
+
+const combos = [comboA, comboB, comboC, comboD, comboE]
+const combo = combos[randomInt(0, combos.length-1)]
 
 const riso2 = [
   '#FF48B0',
@@ -263,34 +241,31 @@ const riso2 = [
   // '#0078BF',
   // '#3255A4',
   '#BB76CF',
-  frameCol,
-  bgc,
+  // frameCol,
+  // bgc,
   // '#407060',
   // '#D1517A',
   ]
+
+  pals = [elliot, bau, riso2, fullColor, combo]
 
 const achro = [
   'black',
   'white'
 ]
-const pals = [source, shepard, bau, elliot, vint, wildberry, burn, scifi, yeller, helmetFace];
+// const pals = [source, shepard, bau, elliot, vint, wildberry, burn, scifi, yeller, helmetFace];
 
 const palNames = [
-  "Source",
-  "Commander Shepard",
+  "Elliot", 
   "Bau",
-  "Elliot",
-  "Vint",
-  "Wildberry",
-  "Burn",
-  "SciFi",
-  "Yeller",
-  "HelmetFace",
+  "Riso",
+  "Full",
+  "Combo"
 ];
 
 //Palette parameters
 palNum = randomInt(0, pals.length-1);
-pal = elliot//pals[palNum];
+pal = pals[palNum];
 palName = palNames[palNum];
 
 console.log(palName)

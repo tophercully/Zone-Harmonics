@@ -45,9 +45,9 @@ class Block {
         c.rectMode(CENTER)
         this.bgLayer = randBool(0.5)
         if(blocksFound < Math.floor(totalSects/2)) {
-            c.fill(200)
+            c.fill(randomVal(255/2, 255))
         } else {
-            c.fill('black')
+            c.fill(randomVal(0, 255/2))
         }
         c.stroke('black')
         c.rect(this.pos.x, this.pos.y, this.wid, this.hei)
@@ -298,5 +298,18 @@ class Block {
         p.drawingContext.setLineDash([this.chunk, this.chunk])
         cave(this.pos.x, this.pos.y, this.wid-padding/2, this.hei-padding/2)
         p.pop()
+    }
+
+    showScatterGrid() {
+        this.filled = randBool()
+        if(this.filled == true) {
+            p.fill(this.col)
+            p.noStroke()
+        } else {
+            p.stroke(this.col)
+            p.strokeWeight(randomVal(3, 6))
+            p.noFill()
+        }
+        scatterGrid(this.pos.x, this.pos.y, this.wid, this.hei, randomInt(2, 10), randomVal(0.1, 0.4), randomVal(0.2, 0.8), this.col, padding*0.4)
     }
 }

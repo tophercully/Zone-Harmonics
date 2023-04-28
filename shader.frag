@@ -102,8 +102,8 @@ void main() {
   //initialize bg 
   vec3 bg = bgc.rgb;
   bool isTile = false;
-  //if the tile is neither black nor white, its a tile we can draw to
-  if(sampTexC.r != 0.0 && sampTexC.r != 1.0) {
+  //if the tile is above 0.5, its a tile we can draw to
+  if(sampTexC.r < 0.5 && sampTexC.r != 0.0) {
     isTile = true;
   } else {
     isTile = false;
@@ -117,24 +117,35 @@ void main() {
   //sample and offset by p and b
   //offset is lessened on tiles with bg to reduce visual noise
   float offset = 0.0;
-  if(isTile == true) {
-    offset = 0.0005*printMess;
-  } else {
-    offset = 0.002*printMess;
-  }
+  float mess = 0.0;
   //0.0025;
   //offset by p color
+  
+  if(sampTexC.r > 0.5) {
+    mess = map(sampTexC.r, 0.5, 1.0, 0.0, printMess);
+    if(isTile == true) {
+    offset = 0.0;//0.0005*mess;
+  } else {
+    offset = 0.002*mess;
+  }
+  } else if(sampTexC.r < 0.5) {
+    offset = map(sampTexC.r, 0.5, 0.0, 0.0, 1.0);
+  } 
+
+  // mess = 0.0;
+
+  
   st.x += map(sampTex.r, 0.0, 1.0, -offset, offset);
   st.y += map(sampTex.b, 0.0, 1.0, -offset, offset);
   st.xy += 0.5;
-  st.xy *= rotate(map(sampTex.g, 0.0, 1.0, -0.00872665*printMess, 0.00872665*printMess));
+  st.xy *= rotate(map(sampTex.g, 0.0, 1.0, -0.00872665*mess, 0.00872665*mess));
   st.xy -= 0.5;
 
   //offset by b color
   st.x += map(sampTexB.r, 0.0, 1.0, -offset, offset);
   st.y += map(sampTexB.b, 0.0, 1.0, -offset, offset);
   st.xy += 0.5;
-  st.xy *= rotate(map(sampTexB.g, 0.0, 1.0, -0.00872665*printMess, 0.00872665*printMess));
+  st.xy *= rotate(map(sampTexB.g, 0.0, 1.0, -0.00872665*mess, 0.00872665*mess));
   st.xy -= 0.5;
 
   //warping
@@ -188,7 +199,7 @@ void main() {
 
 
   
-  // color = texP.rgb;
+  // color = sampTexC.rgb;
   color+= noiseGray;
   
   gl_FragColor = vec4(color, 1.0);

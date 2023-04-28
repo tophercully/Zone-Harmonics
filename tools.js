@@ -699,6 +699,51 @@ function meetLineH(xA, yA, xB, yB, wt) {
 
 }
 
+function scatterGrid(xC, yC, wid, hei, numRows, spacing, textDens, color, edgePad) {
+  adjHei = hei-(edgePad*2)
+  adjWid = wid-(edgePad*2)
+  fontSz = adjHei/numRows
+  fontW = fontSz
+  posNotNeg = randBool(0.5)
+  xNotY = randBool(0.5)
+  p.push()
+  p.translate(xC+(fontW/2), yC)
+  pad = 1 - spacing
+  cellH = fontSz
+  cellW = fontSz
+  rows = Math.floor((adjHei/fontSz))
+  cols = Math.floor((adjWid/(fontSz)))
+  for(let y = 0; y < rows; y++) {
+    for(let x = 0; x < cols; x++) {
+      if(posNotNeg == true) {
+        start = 0
+        end = 1
+      } else {
+        start = 1
+        end = 0
+      }
+
+      if(xNotY == true) {
+        thisAxis = x 
+        target = cols
+      } else {
+        thisAxis = y
+        target = rows
+      }
+
+
+      changeAmt = map(thisAxis, 0, target, start, end)
+      if(noise(x, y) < textDens) {
+        posX = map(x, 0, cols, -wid/2+edgePad, wid/2-edgePad)
+        posY = map(y, 0, rows, -hei/2+edgePad, hei/2-edgePad) + (((cellH*pad)/4))
+        p.rect(posX, posY, cellW*pad, cellH*pad)
+      }
+      
+    }
+  }
+  p.pop()
+}
+
 function meetLineV(xA, yA, xB, yB, wt) {
   gap = wt*randomVal(0.5, 3)
   centerY = map(fxrand(), 0, 1, yA, yB)

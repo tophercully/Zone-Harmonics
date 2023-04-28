@@ -1,6 +1,6 @@
 w= 1600
 h = 2000
-marg = -5//randomVal(10, 400)
+marg = 100//randomVal(10, 400)
 
 willReadFrequently = true
 
@@ -55,7 +55,7 @@ while(accFound == false) {
 bgc = chroma.mix(randColor(), 'white', 0.9).hex()
 
 //parameters
-printMess = 1//fxrand()
+printMess = fxrand()
 
 numDivs = randomInt(3, 10)
 totalSects = numDivs+1
@@ -173,7 +173,7 @@ function draw() {
       blocks[i].showHeader()
     } else {
       if(blocks[i].bar == true) {
-        decider = randomInt(1, 6) 
+        decider = randomInt(1, 7) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -186,9 +186,11 @@ function draw() {
           blocks[i].arrowLine()
         } else if(decider == 6) {
           blocks[i].showDashLine()
+        } else if(decider == 7) {
+          blocks[i].showScatterGrid()
         }
       } else {
-        decider = randomInt(1, 6) 
+        decider = randomInt(1, 7) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -201,13 +203,16 @@ function draw() {
           blocks[i].showBez()
         } else if(decider == 6) {
           blocks[i].showCave()
-        } 
+        } else if(decider == 7) {
+          blocks[i].showScatterGrid()
+        }
 
         cornOrn = randBool(0.3) 
         if(cornOrn == true) {
           blocks[i].cornerOrnament()
         }
       }
+      
     }
     
     slatFilter(blocks[i].pos.x, blocks[i].pos.y, blocks[i].wid, blocks[i].hei)
