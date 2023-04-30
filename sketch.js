@@ -55,7 +55,7 @@ while(accFound == false) {
 bgc = chroma.mix(randColor(), 'white', 0.9).hex()
 
 //parameters
-printMess = fxrand()
+printMess = fxrand()*5
 
 numDivs = randomInt(3, 10)
 totalSects = numDivs+1
@@ -111,7 +111,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
   c.noLoop()
 
 
-  padding = constrain((w/(numDivs+3))-(lineWt/2), 0, w/2)
+  padding = 10//constrain((w/(numDivs+3))-(lineWt/2), 0, w/2)
 }
 
 function draw() {
@@ -126,6 +126,8 @@ function draw() {
   b.stroke('white')
   b.strokeWeight(10)
   
+  //Set the first Rect
+  firstRect()
   //Build the subdivided grid
   for(let i = 0; i < numDivs; i++) {
     dir = fxrand()
@@ -138,6 +140,8 @@ function draw() {
   }
   //Fill the array with Block objects
   blockFinder()
+
+  
 
   //bg builder
   if(bgType == 1) {
@@ -169,6 +173,8 @@ function draw() {
     // p.strokeWeight(3)
     // blocks[i].showLines()
     colNow = blocks[i].col
+    //allow for overlap
+    padding = randomVal(300, -500)
     if(i < 1) {
       blocks[i].showHeader()
     } else {

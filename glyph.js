@@ -31,7 +31,7 @@ class Glyph {
         this.num = 3//randomInt(3, 4)
         p.stroke(this.col)
         p.noFill()
-        p.strokeWeight(this.minSz/10)
+        p.strokeWeight(this.minSz/20)
         p.strokeCap(SQUARE)
         p.strokeJoin(BEVEL)
         p.curveTightness(1)

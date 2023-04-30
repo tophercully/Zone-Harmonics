@@ -49,7 +49,7 @@ class Block {
         } else {
             c.fill(randomVal(0, 255/2))
         }
-        c.stroke('black')
+        c.stroke(255/2)
         c.rect(this.pos.x, this.pos.y, this.wid, this.hei)
     }
 

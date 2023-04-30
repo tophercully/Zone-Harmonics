@@ -1232,3 +1232,13 @@ function arrowLine(xA, yA, xB, yB, wt) {
 
   }
 }
+
+function firstRect() {
+  b.rectMode(CENTER)
+  wid = randomVal(w/2, w*0.66)
+  hei = randomVal(h/2, h*0.66)
+  here = createVector(randomVal(wid, w-wid), randomVal(hei, h-hei))
+  b.fill('white')
+  b.stroke('black')
+  b.rect(here.x, here.y, wid, hei)
+}
