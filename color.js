@@ -29,7 +29,7 @@ bgNames = [
 bgNum = randomInt(0, 1);
 angA = randomVal(0, 360)
 if(bgNum == 0) {
-  bgc = chroma(angA, 0.2, 0.95, 'hsl').hex()//'black'//bgColsB[bgNum];
+  bgc = chroma(angA, 0.2, 0.925, 'hsl').hex()//'black'//bgColsB[bgNum];
 } else {
   bgc = chroma(angA, 0.2, 0.15, 'hsl').hex()//'black'//bgColsB[bgNum];
 
