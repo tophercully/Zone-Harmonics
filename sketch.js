@@ -52,10 +52,10 @@ while(accFound == false) {
   }
 }
 // bgc = chroma(randColor()).saturate(-2).hex()
-bgc = chroma.mix(randColor(), 'white', 0.9).hex()
+// bgc = 'black'//chroma.mix(randColor(), 'white', 0.9).hex()
 
 //parameters
-printMess = fxrand()*5
+printMess = fxrand()*2
 
 numDivs = randomInt(3, 10)
 totalSects = numDivs+1
@@ -72,7 +72,7 @@ sculptorStartRatio = randomVal(0.1, 1)
 sculptExpo = 0.5//randomVal(0.5, 5)
 stretchMin = 200//randomInt(30, 70)
 
-bgType = randomInt(1, 5)
+bgType = randomInt(1, 6)
 doubleBG = randBool(0.1)
 
 //weighing one direction in x or y, under 1 is right/down, above is left/up
@@ -127,8 +127,9 @@ function draw() {
   b.strokeWeight(10)
   
   //Set the first Rect
-  firstRect()
+  // firstRect()
   //Build the subdivided grid
+
   for(let i = 0; i < numDivs; i++) {
     dir = fxrand()
     
@@ -154,6 +155,8 @@ function draw() {
     checkerBG()
   } else if(bgType == 5) {
     gridBG()
+  } else if(bgType == 6) {
+    caveBG(w/2, h/2, w*1.5, h*1.5)
   }
 
   if(doubleBG == true) {
@@ -169,7 +172,7 @@ function draw() {
   
   
   //Fill those Block objects with patterns/modules
-  for(let i = 0; i < blocks.length-1; i++) {
+  for(let i = blocks.length-1; i > -1; i-=1) {
     // p.strokeWeight(3)
     // blocks[i].showLines()
     colNow = blocks[i].col
@@ -235,6 +238,13 @@ function draw() {
   // orgFlower(w/2, h/2, w/2, h/2)
   // slatFilter(w/2, h/2, w, h)
 
+
+  //fine border
+  p.rectMode(CENTER)
+  p.noFill()
+  p.stroke(frameCol)
+  p.strokeWeight(10)
+  p.rect(w/2, h/2, w, h)
 
   //Post processing
   //  copy(p, 0, 0, w, h, 0, 0, w, h)

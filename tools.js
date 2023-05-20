@@ -118,6 +118,10 @@ function randColor() {
   return truePal[randomInt(0, truePal.length-1)]
 }
 
+function colHSL(colAng) {
+  return chroma(colAng, 1.0, 0.5, 'hsl').hex()
+}
+
 function randBool(chanceTrue) {
   if(chanceTrue != "undefined") {
     chanceTrue = chanceTrue
@@ -505,7 +509,7 @@ function glyph(x, y, wid, hei, color) {
   p.fill(color)
   //base body
   p.rectMode(CENTER)
-  ratio = wid*cornerRatio
+  ratio = abs(wid*cornerRatio)
   p.rect(x, y, wid, hei, ratio, ratio, ratio, ratio)
   if(cutout == true) {
     p.fill(bgc)
@@ -1175,6 +1179,7 @@ function blob(x, y, r, inside) {
 function cave(x, y, wid, hei) {
   p.noFill()
   p.stroke(colArray[randomInt(0, 1)])
+  p.strokeCap(SQUARE)
   noiseMax = randomVal(2, 4)
   numLayers = randomInt(3, 6)
   rInc = 1/numLayers
@@ -1196,6 +1201,36 @@ function cave(x, y, wid, hei) {
       p.vertex(x+xC, y+yC)
     }
     p.endShape(CLOSE)
+    phase += 10
+  }
+  
+}
+
+function caveBG(x, y, wid, hei) {
+  b.noFill()
+  b.stroke(colArray[randomInt(0, 1)])
+  b.strokeCap(SQUARE)
+  noiseMax = randomVal(2, 4)
+  numLayers = randomInt(5, 20)
+  rInc = 2/numLayers
+  p.strokeWeight((wid/numLayers)/20)
+  phase = 0
+  
+  for(j = 0; j < numLayers; j++) {
+    
+    thisR = map(j, 0, numLayers, 1, 0)
+    inside = map(j, 0, numLayers, 1-rInc, 0)
+    p.beginShape()
+    for(let i = 0; i < 360; i++) {
+      xOff = (map(cos(i), -1, 1, 0, noiseMax))
+      yOff = (map(sin(i), -1, 1, 0, noiseMax))
+      n = noise(xOff, yOff, phase)
+      rad= map(n, 0, 1, inside, thisR)/2
+      xC = cos(i)*wid*rad
+      yC = sin(i)*hei*rad
+      b.vertex(x+xC, y+yC)
+    }
+    b.endShape(CLOSE)
     phase += 10
   }
   
@@ -1235,8 +1270,8 @@ function arrowLine(xA, yA, xB, yB, wt) {
 
 function firstRect() {
   b.rectMode(CENTER)
-  wid = randomVal(w/2, w*0.66)
-  hei = randomVal(h/2, h*0.66)
+  wid = w/2//randomVal(w/2, w*0.66)
+  hei = h/2//randomVal(h/2, h*0.66)
   here = createVector(randomVal(wid, w-wid), randomVal(hei, h-hei))
   b.fill('white')
   b.stroke('black')

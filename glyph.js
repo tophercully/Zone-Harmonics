@@ -14,7 +14,7 @@ class Glyph {
     }
 
     showLineGlyph() {
-        this.dens = 5//2//randomInt(2, 6)
+        this.dens = 2//5//2//randomInt(2, 6)
         this.newW = this.wid-((this.padding)*2)
         this.newH = this.hei-(this.padding*2)
         this.fontSz = this.newH/this.dens

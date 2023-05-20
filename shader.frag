@@ -177,11 +177,9 @@ void main() {
   if(color.rgb == bgc.rgb) {
     color.rgb = bg.rgb;
   } else if(color.rgb == vec3(1.0)) {
-    color = adjustContrast(color, -0.1);
+    // color = adjustContrast(color, -0.1);
   } else {
-    color = adjustContrast(color, 1.0);
-    color = adjustContrast(color, -0.5);
-    // color = adjustSaturation(color, -0.2);
+    // color = adjustContrast(color, 1.0);
     // color = adjustContrast(color, -0.5);
   }
   // color.rgb = bg.rgb;

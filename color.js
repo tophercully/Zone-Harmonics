@@ -27,7 +27,8 @@ bgNames = [
 ];
 //Background color parameters
 bgNum = 1//randomInt(0, 1);
-bgc = bgColsB[bgNum];
+angA = randomVal(0, 360)
+bgc = chroma(angA, 0.2, 0.9, 'hsl').hex()//'black'//bgColsB[bgNum];
 bgName = bgNames[bgNum];
 
 //Make a color that always contrasts bgc
@@ -264,9 +265,18 @@ const palNames = [
 ];
 
 //Palette parameters
+
+
 palNum = randomInt(0, pals.length-1);
 pal = pals[palNum];
 palName = palNames[palNum];
+
+// angA = randomVal(0, 360)
+pal = [colHSL(angA), colHSL(angA + 180+randomVal(-10, 10))]
+
+
+//hsl color generator
+hslCol = chroma(randomVal(0, 360), 0.5, 0.6, 'hsl').hex()
 
 console.log(palName)
 
