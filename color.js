@@ -26,9 +26,14 @@ bgNames = [
   "Raisin Black",
 ];
 //Background color parameters
-bgNum = 1//randomInt(0, 1);
+bgNum = randomInt(0, 1);
 angA = randomVal(0, 360)
-bgc = chroma(angA, 0.2, 0.9, 'hsl').hex()//'black'//bgColsB[bgNum];
+if(bgNum == 0) {
+  bgc = chroma(angA, 0.2, 0.95, 'hsl').hex()//'black'//bgColsB[bgNum];
+} else {
+  bgc = chroma(angA, 0.2, 0.15, 'hsl').hex()//'black'//bgColsB[bgNum];
+
+}
 bgName = bgNames[bgNum];
 
 //Make a color that always contrasts bgc
