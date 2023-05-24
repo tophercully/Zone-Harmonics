@@ -277,7 +277,8 @@ pal = pals[palNum];
 palName = palNames[palNum];
 
 // angA = randomVal(0, 360)
-pal = [colHSL(angA), colHSL(angA + 180+randomVal(-10, 10))]
+palVal = 45//randomInt(1, 4)*45
+pal = [colHSL(angA), colHSL(angA + palVal +randomVal(-10, 10))]
 
 
 //hsl color generator

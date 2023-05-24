@@ -32,40 +32,40 @@ colDiff = chroma.contrast(truePal[0], accentCol)
 diffNeeded = 1.2
 console.log(colDiff)
 
-accFound = false
-if(colDiff > diffNeeded) {
-  accFound = true
-}
+// accFound = false
+// if(colDiff > diffNeeded) {
+//   accFound = true
+// }
 tries = 0
-while(accFound == false) {
-  accNum++
-  accentCol = chroma(truePal[accNum]).saturate(0).hex()
+// while(accFound == false) {
+//   accNum++
+//   accentCol = chroma(truePal[accNum]).saturate(0).hex()
   
-  colDiff = chroma.contrast(truePal[0], accentCol)
-  console.log(colDiff)
-  if(colDiff > diffNeeded) {
-    accFound = true
-  }
-  if(accNum > truePal.length-2) {
-    accentCol = frameCol
-    accFound = true
-  }
-}
+//   colDiff = chroma.contrast(truePal[0], accentCol)
+//   console.log(colDiff)
+//   if(colDiff > diffNeeded) {
+//     accFound = true
+//   }
+//   if(accNum > truePal.length-2) {
+//     accentCol = frameCol
+//     accFound = true
+//   }
+// }
 // bgc = chroma(randColor()).saturate(-2).hex()
 // bgc = 'black'//chroma.mix(randColor(), 'white', 0.9).hex()
 
 //parameters
 printMess = fxrand()*2
 
-numDivs = randomInt(3, 10)
-totalSects = numDivs+1
+numDivisions = randomInt(3, 15)
+totalSects = numDivisions+1
 lineWtC = 2//randomVal(5, 20)
 
 flowerExpo = randomVal(0.1, 0.5)
 flowerMidPt = randomVal(0.1, 0.5)
 flowerPetals = randomInt(4, 8)
 
-glyphType = randomInt(1, 2)
+glyphType = 2//randomInt(1, 2)
 lineWt = 1 - randomVal(0.5, 0.1)
 cornerRatio = randomVal(0.0, 0.5)//0.2
 sculptorStartRatio = randomVal(0.1, 1)
@@ -75,9 +75,12 @@ stretchMin = 200//randomInt(30, 70)
 bgType = randomInt(1, 6)
 doubleBG = randBool(0.1)
 
+minColAng = randomVal(0, 360)
+maxColAng = minColAng+45
+
 //weighing one direction in x or y, under 1 is right/down, above is left/up
-sectWeightX = randomVal(0.1, 10)
-sectWeightY = randomVal(0.1, 10)
+sectWeightX = 1//randomVal(0.1, 10)
+sectWeightY = 1//randomVal(0.1, 10)
 
 
 
@@ -100,9 +103,6 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
   p = createGraphics(w, h)
   c = createGraphics(w, h)
   b = createGraphics(w, h)
-
-  l1 = createGraphics(w, h)
-  l2 = createGraphics(w, h)
   angleMode(DEGREES)
   p.angleMode(DEGREES)
   c.angleMode(DEGREES)
@@ -119,7 +119,6 @@ function draw() {
   c.background('white')
   b.background('white')
   p.background(bgc)
-  l1.background(bgc)
 
   //Build our background Major Composition layer
   b.fill('black')
@@ -130,7 +129,7 @@ function draw() {
   // firstRect()
   //Build the subdivided grid
 
-  for(let i = 0; i < numDivs; i++) {
+  for(let i = 0; i < numDivisions; i++) {
     dir = fxrand()
     
     if(dir < 0.5) {
@@ -177,7 +176,7 @@ function draw() {
     // blocks[i].showLines()
     colNow = blocks[i].col
     //allow for overlap
-    padding = randomVal(300, -500)
+    padding = -200//randomVal(300, -500)
     if(i < 1) {
       blocks[i].showHeader()
     } else {
@@ -256,8 +255,6 @@ function draw() {
    shade.setUniform("c", c);
    shade.setUniform("b", b);
    shade.setUniform("printMess", printMess);
-   shade.setUniform("l1", l1);
-   shade.setUniform("l2", l2);
    shade.setUniform("seed", randomVal(0, 10));
    shade.setUniform("marg", map(marg, 0, w, 0, 1));
    shade.setUniform("bgc", [

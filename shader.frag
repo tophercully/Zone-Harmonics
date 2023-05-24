@@ -10,8 +10,6 @@ uniform sampler2D p;
 uniform sampler2D c;
 uniform sampler2D b;
 uniform float printMess;
-uniform sampler2D l1;
-uniform sampler2D l2;
 uniform vec2 u_resolution;
 uniform float seed;
 uniform vec3 bgc;
@@ -194,7 +192,10 @@ void main() {
     color = adjustContrast(color, -0.3);
   } 
   
-
+  float overpass = sin(stB.y*800.0);
+  if(overpass < 0.0) {
+    // color = bgc;
+  }
 
   
   // color = sampTexC.rgb;

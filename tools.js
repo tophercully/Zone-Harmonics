@@ -119,7 +119,11 @@ function randColor() {
 }
 
 function colHSL(colAng) {
-  return chroma(colAng, 1.0, 0.5, 'hsl').hex()
+  return chroma(colAng, 1.0, randomVal(0.4, 0.8), 'hsl').hex()
+}
+
+function randGenCol() {
+  return chroma(randomVal(minColAng, maxColAng), 1.0, randomVal(0.4, 0.8), 'hsl').hex()
 }
 
 function randBool(chanceTrue) {
@@ -1010,7 +1014,7 @@ function concentricBG() {
 
 function slatFilter(x, y, wid, hei) {
   vert = randBool()
-  dens = 200//randomInt(10, 100)
+  dens = randomInt(10, 200)//200
   if(vert == true) {
     wt = constrain((hei/dens)/4, 0.25, 100)
     b.stroke(bgc)

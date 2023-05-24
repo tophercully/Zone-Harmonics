@@ -44,7 +44,7 @@ class Block {
     removeOption() {
         c.rectMode(CENTER)
         this.bgLayer = randBool(0.5)
-        if(blocksFound < Math.floor(totalSects/2)) {
+        if(blocksFound < Math.floor(totalSects*0.5)) {
             c.fill(randomVal(255/2, 255))
         } else {
             c.fill(randomVal(0, 255/2))
@@ -311,5 +311,12 @@ class Block {
             p.noFill()
         }
         scatterGrid(this.pos.x, this.pos.y, this.wid, this.hei, randomInt(2, 10), randomVal(0.1, 0.4), randomVal(0.2, 0.8), this.col, padding*0.4)
+    }
+
+    fillBlock() {
+        p.push()
+        p.rectMode(CENTER)
+        p.rect(this.pos.x, this.pos.y, this.wid, this.hei)
+        p.pop()
     }
 }
