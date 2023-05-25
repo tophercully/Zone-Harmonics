@@ -1,8 +1,8 @@
 class Block {
     constructor(x, y, wid, hei) {
         this.pos = createVector(x, y)
-        this.wid = wid 
-        this.hei = hei 
+        this.wid = wid
+        this.hei = hei
         this.sz = hei*wid
         this.colorChance = fxrand()
         this.colNum = randomInt(0, 1)
@@ -43,7 +43,7 @@ class Block {
 
     removeOption() {
         c.rectMode(CENTER)
-        this.bgLayer = randBool(0.5)
+        this.bgLayer = randBool(0.3)
         if(blocksFound < Math.floor(totalSects*0.5)) {
             c.fill(randomVal(255/2, 255))
         } else {
@@ -316,6 +316,7 @@ class Block {
     fillBlock() {
         p.push()
         p.rectMode(CENTER)
+        p.fill(this.col)
         p.rect(this.pos.x, this.pos.y, this.wid, this.hei)
         p.pop()
     }

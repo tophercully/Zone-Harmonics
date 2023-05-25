@@ -76,7 +76,7 @@ bgType = randomInt(1, 6)
 doubleBG = randBool(0.1)
 
 minColAng = randomVal(0, 360)
-maxColAng = minColAng+45
+maxColAng = minColAng+145
 
 //weighing one direction in x or y, under 1 is right/down, above is left/up
 sectWeightX = 1//randomVal(0.1, 10)
@@ -176,12 +176,12 @@ function draw() {
     // blocks[i].showLines()
     colNow = blocks[i].col
     //allow for overlap
-    padding = -200//randomVal(300, -500)
+    padding = randomVal(300, -200)
     if(i < 1) {
       blocks[i].showHeader()
     } else {
       if(blocks[i].bar == true) {
-        decider = randomInt(1, 7) 
+        decider = randomInt(1, 8) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -196,9 +196,11 @@ function draw() {
           blocks[i].showDashLine()
         } else if(decider == 7) {
           blocks[i].showScatterGrid()
+        } else if(decider == 8) {
+          blocks[i].fillBlock()
         }
       } else {
-        decider = randomInt(1, 7) 
+        decider = randomInt(1, 8) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -213,6 +215,8 @@ function draw() {
           blocks[i].showCave()
         } else if(decider == 7) {
           blocks[i].showScatterGrid()
+        } else if(decider == 8) {
+          blocks[i].fillBlock()
         }
 
         cornOrn = randBool(0.3) 

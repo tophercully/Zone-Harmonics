@@ -119,7 +119,7 @@ function randColor() {
 }
 
 function colHSL(colAng) {
-  return chroma(colAng, 1.0, randomVal(0.4, 0.8), 'hsl').hex()
+  return chroma(colAng, 0.9, randomVal(0.4, 0.8), 'hsl').hex()
 }
 
 function randGenCol() {
@@ -1273,11 +1273,15 @@ function arrowLine(xA, yA, xB, yB, wt) {
 }
 
 function firstRect() {
-  b.rectMode(CENTER)
+  c.rectMode(CENTER)
   wid = w/2//randomVal(w/2, w*0.66)
   hei = h/2//randomVal(h/2, h*0.66)
-  here = createVector(randomVal(wid, w-wid), randomVal(hei, h-hei))
-  b.fill('white')
-  b.stroke('black')
-  b.rect(here.x, here.y, wid, hei)
+  here = createVector(randomVal(wid/2, w-(wid/2)), randomVal(hei/2, h-(hei/2)))
+  c.fill(200)
+  c.strokeWeight(3)
+  c.stroke('black')
+  c.rect(here.x, here.y, wid, hei)
+  blocks[0] = new Block(here.x, here.y, wid, hei)
+  // blocks[0].removeOption()
 }
+
