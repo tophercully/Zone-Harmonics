@@ -5,7 +5,7 @@ w = 1600
 
 
 //window.alba._testSeed()
-const { seed = "0xf6e99c822037d4a4f3d16fecbaee7341cd735ebf3a007e88a97c77eebdd42b23"
+const { seed = window.alba._testSeed()
     , width = w, tokenId } = window.alba.params;
 const prng = window.alba.prng(seed);
 console.log(seed)
