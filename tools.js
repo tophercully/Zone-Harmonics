@@ -1,10 +1,10 @@
 function randomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(fxrand() * (max - min + 1) + min); // The maximum is exclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is exclusive and the minimum is inclusive
 }
 function randomVal(min, max) {
-  return fxrand() * (max - min) + min;
+  return Math.random() * (max - min) + min;
 }
 function map_range(value, low1, high1, low2, high2) {
   return low2 + ((high2 - low2) * (value - low1)) / (high1 - low1);
@@ -15,7 +15,7 @@ function shuff(array) {
     randomIndex;
 
   while (currentIndex != 0) {
-    randomIndex = Math.floor(fxrand() * currentIndex);
+    randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex],
@@ -119,12 +119,12 @@ function randColor() {
 }
 
 function colHSL(colAng) {
-  return chroma(colAng, 0.9, randomVal(0.4, 0.8), 'hsl').hex()
+  return color(colAng, 0.9, randomVal(0.4, 0.8))
 }
 
-function randGenCol() {
-  return chroma(randomVal(minColAng, maxColAng), 1.0, randomVal(0.4, 0.8), 'hsl').hex()
-}
+// function randGenCol() {
+//   return chroma(randomVal(minColAng, maxColAng), 1.0, randomVal(0.4, 0.8), 'hsl').hex()
+// }
 
 function randBool(chanceTrue) {
   if(chanceTrue != "undefined") {
@@ -132,7 +132,7 @@ function randBool(chanceTrue) {
   } else {
     chanceTrue = 0.5
   }
-  rand = fxrand()
+  rand = Math.random()
   if(rand < chanceTrue) {
     bool = true
   } else {
@@ -576,7 +576,7 @@ function textBox(xC, yC, wid, hei, numRows, spacing, textDens, color, edgePad) {
   
   for(let y = 0; y < rows; y++) {
     for(let x = 0; x < cols; x++) {
-      if(fxrand() < textDens) {
+      if(Math.random() < textDens) {
         posX = (-wid/2)+(edgePad)+(cellW*x)//map(x, 0, cols, -wid/2+edgePad, (wid/2)-edgePad)
         posY = (-hei/2)+(edgePad)+(cellH*y)//map(y, 0, rows, -hei/2+edgePad, (hei/2)-edgePad) //+ (((cellH*pad)/4))
         // p.strokeWeight(10)
@@ -697,7 +697,7 @@ function gradShape(x, y, wid, hei, changeAmt) {
 
 function meetLineH(xA, yA, xB, yB, wt) {
   gap = wt*randomVal(0.5, 3)
-  centerX = map(fxrand(), 0, 1, xA, xB)
+  centerX = map(Math.random(), 0, 1, xA, xB)
   xAB = constrain(centerX - wt + gap, xA, xB)
   xBB = constrain(centerX + wt + gap, xA, xB)
 
@@ -754,7 +754,7 @@ function scatterGrid(xC, yC, wid, hei, numRows, spacing, textDens, color, edgePa
 
 function meetLineV(xA, yA, xB, yB, wt) {
   gap = wt*randomVal(0.5, 3)
-  centerY = map(fxrand(), 0, 1, yA, yB)
+  centerY = map(Math.random(), 0, 1, yA, yB)
   yAB = constrain(centerY - wt + gap, yA, yB)
   yBB = constrain(centerY + wt + gap, yA, yB)
 
@@ -877,7 +877,7 @@ function textCirc(x, y, r, textDens) {
   // letterW = (circ/numLetters)/6
   // letterH = letterW * randomVal(1, 2)
   for(let i = 0; i < 360; i+= 360/numLetters) {
-    decide = fxrand() 
+    decide = Math.random()
     if(decide < textDens) {
       p.push()
       xC = cos(i+startAng)*((r/2)-(letterH/2))

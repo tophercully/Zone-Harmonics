@@ -4,7 +4,7 @@ class Block {
         this.wid = wid
         this.hei = hei
         this.sz = hei*wid
-        this.colorChance = fxrand()
+        this.colorChance = Math.random()
         this.colNum = randomInt(0, 1)
         this.colA = colArray[this.colNum]
         this.colB = colArray[1-this.colNum]
@@ -99,7 +99,7 @@ class Block {
             this.num = Math.floor((this.wid-this.rad-(this.pad*2))/this.hei)
             // this.startX = 
             for(let i = 0; i < this.num+1; i++) {
-                this.fillChance = fxrand()
+                this.fillChance = Math.random()
                 if(this.fillChance < 0.5) {
                     p.fill(this.col)
                     p.noStroke()
@@ -124,14 +124,14 @@ class Block {
                 this.yPos = map(i, 0, this.num, this.pos.y-(this.hei/2)+this.rad/2+this.pad, this.pos.y+(this.hei/2)-this.rad/2-this.pad)
                 this.xPos = this.pos.x
 
-                this.bgChance = fxrand()
+                this.bgChance = Math.random()
                 if(this.bgChance < 0.1) {
                     p.fill(this.oppCol)
                     p.noStroke()
                     p.rectMode(CENTER)
                     p.rect(this.xPos, this.yPos, this.rad*1.1, this.rad*1.1)
                 }
-                this.fillChance = fxrand()
+                this.fillChance = Math.random()
                 if(this.fillChance < 0.5) {
                     p.fill(this.col)
                     p.noStroke()
@@ -213,7 +213,7 @@ class Block {
 
     cornerOrnament() {
         this.filled = randBool()
-        this.bgChance = fxrand()
+        this.bgChance = Math.random()
         if(this.bgChance < 0.1) {
             p.fill(this.oppCol)
             p.noStroke()

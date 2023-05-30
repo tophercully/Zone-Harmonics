@@ -1,6 +1,13 @@
 w= 1600
-h = 2000
-marg = 100//randomVal(10, 400)
+
+const { seed = window.alba._testSeed(), width = window.innerWidth, tokenId } = window.alba.params;
+const prng = window.alba.prng(seed);
+
+
+const aspectRatio = 4 / 5;
+const h = w / aspectRatio;
+
+marg = 20//randomVal(10, 400)
 
 willReadFrequently = true
 
@@ -31,31 +38,11 @@ accentCol = chroma(truePal[accNum]).saturate(0).hex()
 colDiff = chroma.contrast(truePal[0], accentCol)
 diffNeeded = 1.2
 console.log(colDiff)
-
-// accFound = false
-// if(colDiff > diffNeeded) {
-//   accFound = true
-// }
 tries = 0
-// while(accFound == false) {
-//   accNum++
-//   accentCol = chroma(truePal[accNum]).saturate(0).hex()
-  
-//   colDiff = chroma.contrast(truePal[0], accentCol)
-//   console.log(colDiff)
-//   if(colDiff > diffNeeded) {
-//     accFound = true
-//   }
-//   if(accNum > truePal.length-2) {
-//     accentCol = frameCol
-//     accFound = true
-//   }
-// }
-// bgc = chroma(randColor()).saturate(-2).hex()
-// bgc = 'black'//chroma.mix(randColor(), 'white', 0.9).hex()
+
 
 //parameters
-printMess = fxrand()*2
+printMess = Math.random()*2
 
 numDivisions = randomInt(3, 15)
 totalSects = numDivisions+1
@@ -81,6 +68,9 @@ maxColAng = minColAng+145
 //weighing one direction in x or y, under 1 is right/down, above is left/up
 sectWeightX = 1//randomVal(0.1, 10)
 sectWeightY = 1//randomVal(0.1, 10)
+
+
+
 
 
 
@@ -112,6 +102,8 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 
 
   padding = 10//constrain((w/(numDivs+3))-(lineWt/2), 0, w/2)
+  randomSeed(prng() * 1e15)
+  colorMode(HSB, 360, 1.0, 1.0)
 }
 
 function draw() {
@@ -130,7 +122,7 @@ function draw() {
   //Build the subdivided grid
 
   for(let i = 0; i < numDivisions; i++) {
-    dir = fxrand()
+    dir = Math.random()
     
     if(dir < 0.5) {
       newSectionVert()
@@ -273,8 +265,8 @@ function draw() {
   ]);
 
    rect(0, 0, w, h)
-
-   fxpreview()
+   window.alba.setMetadata({});
+   window.alba.setComplete(true)
   //  save("blockBatchE.png")
   //  setTimeout(() => {
   //   window.location.reload();
