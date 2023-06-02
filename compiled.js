@@ -2033,7 +2033,10 @@ void main() {
   }
 
   
-  // color = sampTexC.rgb;
+
+  color = adjustSaturation(color, 0.3);
+  color = adjustContrast(color, -0.1);
+  
   color+= noiseGray;
   
   gl_FragColor = vec4(color, 1.0);
