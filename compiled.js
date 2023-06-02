@@ -144,7 +144,9 @@ function randomInt(min, max) {
   
   function colHSL(colAng) {
     // color(colAng, 0.9, randomVal(0.4, 0.8))
-    outputCol = hslToHex(colAng, 90, randomVal(40, 80))
+    lum = randomVal(20, 80)
+    sat = map_range(lum, 20, 80, 10, 90)
+    outputCol = hslToHex(colAng, sat, lum)
     return outputCol
   }
   
@@ -186,13 +188,15 @@ function randomInt(min, max) {
   ///////////////////////////////////////////////////////////////////
 
   //Background color parameters
+
+  bgCols = []
 bgNum = randomInt(0, 1);
 angA = randomVal(0, 360)
 if(bgNum == 0) {
-  bgc = hslToHex(angA, 20, 92.5)
+  bgc = hslToHex(angA, 20, 95)
   calcBgLum = 92.5
 } else {
-  bgc = hslToHex(angA, 20, 15)
+  bgc = hslToHex(angA, 20, 10)
   calcBgLum = 15
 }
 
@@ -202,9 +206,10 @@ if (calcBgLum > 50) {
 } else if( calcBgLum < 50) {
   frameCol = 'white'; //white
 }
+posterPal = ['#d45c2d', "#45885c", "#edb33f", "#32528f", '#efaeb6', "#015294", "#e46019", '#2AB6FD', "##EF4020", "##2B48C7", '#2B5318', "#9D52FF", "#F6B6D4"]
 
-palVal = 45//randomInt(1, 4)*45
-pal = [colHSL(angA), colHSL(angA + palVal +randomVal(-10, 10))]
+palVal = randomInt(1, 4)*45
+pal = posterPal//[colHSL(angA), colHSL(angA + palVal +randomVal(-10, 10))]
 
 truePal = shuff(pal);
 
@@ -1069,7 +1074,7 @@ function arcRing(x, y, wid, hei, wt) {
   
   function slatFilter(x, y, wid, hei) {
     vert = randBool()
-    dens = randomInt(10, 200)//200
+    dens = 10//randomInt(10, 100)//200
     if(vert == true) {
       wt = constrain((hei/dens)/4, 0.25, 100)
       b.stroke(bgc)
@@ -1874,6 +1879,7 @@ vec3 adjustBrightness(vec3 color, float value) {
 }
 
 float noise (in vec2 st) {
+  
     vec2 i = floor(st);
     vec2 f = fract(st);
 
@@ -1900,6 +1906,8 @@ mat2 rotate(float angle){
 }
 
 void main() {
+
+  
   vec2 uv = vTexCoord*u_resolution;
   vec2 st = vTexCoord;
   vec2 stB = vTexCoord;
@@ -1909,8 +1917,8 @@ void main() {
   stB.y = 1.0 - stB.y;
 
   //form noise
-  st.x += map(random(st.xy), 0.0, 1.0, -0.00025, 0.00025);
-  st.y += map(random(seed+(st.xy)), 0.0, 1.0, -0.00025, 0.00025);
+  st.x += map(random(st.xy), 0.0, 1.0, -0.0004, 0.0004);
+  st.y += map(random(seed+(st.xy)), 0.0, 1.0, -0.0004, 0.0004);
 
   //Shrink to fit inside margins
   float margX = marg;
@@ -1936,10 +1944,8 @@ void main() {
     isTile = false;
   }
   //if its a tile we can draw on and it's black on texB, the bg layer is accCol
-  vec3 accColMixed = mix(accCol, bgc, 0.0);
-  accColMixed = accCol;//adjustSaturation(accCol, -0.25);
   if(isTile == true && sampTexB.r != 1.0) {
-    bg.rgb = accColMixed.rgb;
+    bg.rgb = accCol;
   }
   //sample and offset by p and b
   //offset is lessened on tiles with bg to reduce visual noise
@@ -2071,9 +2077,9 @@ tries = 0
 
 
 //parameters
-printMess = prng()*2
+printMess = randomVal(-2, 2)//prng()*2
 
-numDivisions = randomInt(3, 15)
+numDivisions = randomInt(5, 20)
 totalSects = numDivisions+1
 lineWtC = 2//randomVal(5, 20)
 
@@ -2204,7 +2210,7 @@ function draw() {
       blocks[i].showHeader()
     } else {
       if(blocks[i].bar == true) {
-        decider = randomInt(1, 8) 
+        decider = randomInt(1, 7) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -2219,11 +2225,9 @@ function draw() {
           blocks[i].showDashLine()
         } else if(decider == 7) {
           blocks[i].showScatterGrid()
-        } else if(decider == 8) {
-          blocks[i].fillBlock()
-        }
+        } 
       } else {
-        decider = randomInt(1, 8) 
+        decider = randomInt(1, 7) 
         if(decider == 1) {
           blocks[i].showTextBox()
         } else if(decider == 2) {
@@ -2238,8 +2242,6 @@ function draw() {
           blocks[i].showCave()
         } else if(decider == 7) {
           blocks[i].showScatterGrid()
-        } else if(decider == 8) {
-          blocks[i].fillBlock()
         }
 
         cornOrn = randBool(0.3) 
