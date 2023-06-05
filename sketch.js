@@ -7,7 +7,7 @@ const prng = window.alba.prng(seed);
 const aspectRatio = 4 / 5;
 const h = w / aspectRatio;
 
-marg = 20//randomVal(10, 400)
+marg = 50//randomVal(10, 400)
 
 willReadFrequently = true
 

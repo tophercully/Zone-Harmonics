@@ -2000,7 +2000,7 @@ void main() {
   
 
   //color noise
-  float noiseGray = map(random(st.xy/100.0), 0.0, 1.0, -0.05, 0.15);
+  float noiseGray = map(random(st.xy/100.0), 0.0, 1.0, -0.025, 0.1);
 
   vec3 color = vec3(0.0);
   vec3 final = vec3(0.0);
@@ -2048,7 +2048,7 @@ void main() {
 //sketch
 
 
-marg = 20//randomVal(10, 400)
+marg = 30//randomVal(10, 400)
 
 willReadFrequently = true
 
