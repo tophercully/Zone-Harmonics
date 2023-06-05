@@ -206,7 +206,7 @@ if (calcBgLum > 50) {
 } else if( calcBgLum < 50) {
   frameCol = 'white'; //white
 }
-posterPal = ['#d45c2d', "#45885c", "#edb33f", "#32528f", '#efaeb6', "#015294", "#e46019", '#2AB6FD', "##EF4020", "##2B48C7", '#2B5318', "#9D52FF", "#F6B6D4"]
+posterPal = ['#d45c2d', "#45885c", "#edb33f", "#32528f", '#efaeb6', "#015294", "#e46019", '#2AB6FD', "##EF4020", "##2B48C7", '#2B5318', "#9D52FF", "#F6B6D4", "#fce148", "#d79024", "#fda273"]
 
 palVal = randomInt(1, 4)*45
 pal = posterPal//[colHSL(angA), colHSL(angA + palVal +randomVal(-10, 10))]
@@ -2000,7 +2000,7 @@ void main() {
   
 
   //color noise
-  float noiseGray = map(random(st.xy), 0.0, 1.0, -0.05, 0.05);
+  float noiseGray = map(random(st.xy/100.0), 0.0, 1.0, -0.05, 0.15);
 
   vec3 color = vec3(0.0);
   vec3 final = vec3(0.0);
