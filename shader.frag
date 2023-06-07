@@ -197,7 +197,7 @@ void main() {
     // color = bgc;
   }
 
-  
+  color = adjustContrast(color, -0.1);
   // color = sampTexC.rgb;
   color+= noiseGray;
   

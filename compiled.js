@@ -225,7 +225,7 @@ posterPal = [
 "#9D52FF", 
 "#F6B6D4", 
 // "#fce148", 
-"##FEE719"
+"#FEE719"
 // "#fda273"
 ]
 
@@ -386,7 +386,7 @@ function arcRing(x, y, wid, hei, wt) {
       newPxArray[Math.floor(here.x)][Math.floor(here.y)+Math.floor(botDis)] = true
     }
     //create line from top to bottom points
-    // c.line(here.x, here.y+topDis, here.x, here.y+botDis)
+    c.line(here.x, here.y+topDis, here.x, here.y+botDis)
     // c.circle(here.x, here.y, 20)
     // for(let i = here.y-leftDis; i < here.y+botDis; i++) {
     //   newPxArray[here.x][i] = true
@@ -469,7 +469,7 @@ function arcRing(x, y, wid, hei, wt) {
 
     }
     //create line from left to right points
-    // c.line(here.x+leftDis, here.y, here.x+rightDis, here.y)
+    c.line(here.x+leftDis, here.y, here.x+rightDis, here.y)
     // c.circle(here.x, here.y, 20)
     // for(let i = here.x-leftDis; i < here.x+rightDis; i++) {
     //   newPxArray[Math.floor(i)][Math.floor(here.y)] = true
@@ -482,7 +482,7 @@ function arcRing(x, y, wid, hei, wt) {
   function blockFinder() {
     blocksFound = 0
     tries = 0
-    while (blocksFound < totalSects && tries < 500) {
+    while (blocksFound < totalSects && tries < 1000) {
       //find random point
       here = createVector(randomInt(marg, w-marg), randomInt(marg, h-marg))
       //check if that point is white
