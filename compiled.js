@@ -1,15 +1,24 @@
-
 w = 1600
-
-
-
-
 //window.alba._testSeed()
-const { seed = window.alba._testSeed()
-    , width = w, tokenId } = window.alba.params;
-const prng = window.alba.prng(seed);
-console.log(seed)
-console.log(prng())
+const { seed = window.alba._testSeed(), width = w, tokenId } = window.alba.params;
+  const prng = window.alba.prng(seed);
+
+const aspectRatio = 4 / 5;
+const height = width / aspectRatio;
+h = height
+
+//create array to replace c layer
+newPxArray = []
+for(let x = 0; x < width; x++) {
+  newPxArray[x] = []
+  for(let y = 0; y < height; y++) {
+    newPxArray[x][y] = false
+
+    if(y == 1 || x == 1 || x == w-1 || y == h-1) {
+      newPxArray[x][y] = true
+    }
+  }
+}
 
 function randomInt(min, max) {
     min = Math.ceil(min);
@@ -143,16 +152,11 @@ function randomInt(min, max) {
   }
   
   function colHSL(colAng) {
-    // color(colAng, 0.9, randomVal(0.4, 0.8))
     lum = randomVal(20, 80)
     sat = map_range(lum, 20, 80, 10, 90)
     outputCol = hslToHex(colAng, sat, lum)
     return outputCol
   }
-  
-//   function randGenCol() {
-//     return chroma(randomVal(minColAng, maxColAng), 1.0, randomVal(0.4, 0.8), 'hsl').hex()
-//   }
   
   function randBool(chanceTrue) {
     if(chanceTrue != "undefined") {
@@ -206,12 +210,44 @@ if (calcBgLum > 50) {
 } else if( calcBgLum < 50) {
   frameCol = 'white'; //white
 }
-posterPal = ['#d45c2d', "#45885c", "#edb33f", "#32528f", '#efaeb6', "#015294", "#e46019", '#2AB6FD', "##EF4020", "##2B48C7", '#2B5318', "#9D52FF", "#F6B6D4", "#fce148", "#d79024", "#fda273"]
+posterPal = [
+  '#d45c2d',
+ "#45885c", 
+// "#edb33f", 
+"#32528f", 
+// '#efaeb6', 
+"#015294", 
+"#e46019", 
+'#2AB6FD', 
+"#EF4020", 
+"#2B48C7", 
+// '#2B5318', 
+"#9D52FF", 
+"#F6B6D4", 
+// "#fce148", 
+"##FEE719"
+// "#fda273"
+]
 
-palVal = randomInt(1, 4)*45
-pal = posterPal//[colHSL(angA), colHSL(angA + palVal +randomVal(-10, 10))]
+const bau = [
+  "#1267b7",
+  "#ec3e2b",
+  "#f6b81a",
+  // "#E4D6C2",
+  // "#1D1F22",
+]
 
-truePal = shuff(pal);
+const elliot = [
+  "#E73542",
+  "#F6A026",
+  "#2CA8C4",
+  "#EE7140",
+  "#289C5B",
+  // "#F5E2CC",
+  // "#161117"
+]
+
+truePal = shuff(posterPal);
 
 /////////////////////////////////////////////////////////////////////////
 //tool functions
@@ -230,7 +266,7 @@ function arcRing(x, y, wid, hei, wt) {
       p.strokeCap(SQUARE)
       p.stroke(randColor())
       p.strokeWeight(wt)
-      // p.fill(randColor())
+      
       p.noFill()
   
       startAng = angs[i]
@@ -256,7 +292,7 @@ function arcRing(x, y, wid, hei, wt) {
       l1.strokeCap(SQUARE)
       l1.stroke(randColor())
       l1.strokeWeight(wt)
-      // p.fill(randColor())
+     
       l1.noFill()
   
       startAng = angs[i]
@@ -265,7 +301,7 @@ function arcRing(x, y, wid, hei, wt) {
       } else {
         endAng = angs[0]
       }
-      // console.log(startAng, endAng)
+     
       l1.arc(x, y, wid, hei, startAng, endAng, OPEN)
     }
   }
@@ -297,34 +333,30 @@ function arcRing(x, y, wid, hei, wt) {
     while(ptFound == 0) {
       
       //Find starting point
-      xVal = randomVal(0, 1)
-      yVal = randomVal(0, 1)
-      x = map(pow(xVal, sectWeightX), 0, pow(1, sectWeightX), marg, w-marg)
-      y = map(pow(yVal, sectWeightY), 0, pow(1, sectWeightY), marg, w-marg)
-      here = createVector(x, y)    //Check that point isnt taken
-      colCheck = c.get(here.x, here.y)
+      x = randomInt(marg, w-marg)
+      y = randomInt(marg, h-marg)
+      here = createVector(x, y)
+      //Check that point isnt taken
+      colCheck = newPxArray[here.x][here.y]
   
       //create left and right point
       leftDis = 0
       rightDis = 0
       leftCheck = colCheck
       rightCheck = colCheck
-      // console.log(leftCheck[0])
-  
+    
       //move left over until it hits black
-      while(leftCheck[0] == 255) {
+      while(leftCheck != true) {
         leftDis-=1
-        leftCheck = c.get(here.x+leftDis, here.y)
-        // console.log('left is', leftCheck[0])
+        leftCheck = newPxArray[here.x+leftDis][here.y]
       }
     
       //move right over until it hits black
-      while(rightCheck[0] == 255) {
+      while(rightCheck != true) {
         rightDis++
-        rightCheck = c.get(here.x+rightDis, here.y)
-        // console.log('right is', leftCheck[0])
+        rightCheck = newPxArray[here.x+rightDis][here.y]
       }
-        if(colCheck[0] > 250 && rightDis > padding && abs(leftDis) > padding) {
+        if(colCheck != true && rightDis > padding && abs(leftDis) > padding) {
           //tell loop we've found it
         ptFound++
       }
@@ -339,22 +371,29 @@ function arcRing(x, y, wid, hei, wt) {
     botDis = 0
     topCheck = colCheck
     botCheck = colCheck
-    // console.log(topCheck[0])
+   
     //move top up until it hits black
-    while(topCheck[0] != 0) {
+    while(topCheck != true) {
       topDis-=1
-      topCheck = c.get(here.x, here.y+topDis)
-      // console.log('top is', topCheck[0])
+      topCheck = newPxArray[Math.floor(here.x)][Math.floor(here.y)+Math.floor(topDis)]
+      newPxArray[Math.floor(here.x)][Math.floor(here.y)+Math.floor(topDis)] = true
     }
     
     //move bttom down until it hits black
-    while(botCheck[0] != 0) {
+    while(botCheck != true) {
       botDis++
-      botCheck = c.get(here.x, here.y+botDis)
-      // console.log('bot is', botCheck[0])
+      botCheck = newPxArray[Math.floor(here.x)][Math.floor(here.y)+Math.floor(botDis)]
+      newPxArray[Math.floor(here.x)][Math.floor(here.y)+Math.floor(botDis)] = true
     }
     //create line from top to bottom points
-    c.line(here.x, here.y+topDis, here.x, here.y+botDis)
+    // c.line(here.x, here.y+topDis, here.x, here.y+botDis)
+    // c.circle(here.x, here.y, 20)
+    // for(let i = here.y-leftDis; i < here.y+botDis; i++) {
+    //   newPxArray[here.x][i] = true
+    //   newPxArray[here.x+1][i] = true
+    //   newPxArray[here.x-1][i] = true
+    // }
+    
   }
   
   function newSectionHor() {
@@ -365,13 +404,11 @@ function arcRing(x, y, wid, hei, wt) {
     //run this while looking for a point
     while(ptFound == 0) {
       //Find starting point
-      xVal = randomVal(0, 1)
-      yVal = randomVal(0, 1)
-      x = map(pow(xVal, sectWeightX), 0, pow(1, sectWeightX), marg, w-marg)
-      y = map(pow(yVal, sectWeightY), 0, pow(1, sectWeightY), marg, w-marg)
+      x = randomInt(marg, w-marg)
+      y = randomInt(marg, h-marg)
       here = createVector(x, y)
       //Check that point isnt taken
-      colCheck = c.get(here.x, here.y)
+      colCheck = newPxArray[here.x][here.y]
   
       
       //check above and below with the same spreader
@@ -380,22 +417,22 @@ function arcRing(x, y, wid, hei, wt) {
       botDis = 0
       topCheck = colCheck
       botCheck = colCheck
-      // console.log(topCheck[0])
+      
       //move top up until it hits black
-      while(topCheck[0] == 255) {
+      while(topCheck != true) {
         topDis-=1
-        topCheck = c.get(here.x, here.y+topDis)
-        // console.log('top is', topCheck[0])
+        topCheck = newPxArray[here.x][here.y+topDis]
+       
       }
     
       //move bottom down until it hits black
-      while(botCheck[0] == 255) {
+      while(botCheck != true) {
         botDis++
-        botCheck = c.get(here.x, here.y+botDis)
-        // console.log('bot is', botCheck[0])
+        botCheck = newPxArray[here.x][here.y+botDis]
+
       }
       //check that space is white and there is space above and below
-      if(colCheck[0] > 250 && botDis > padding && abs(topDis) > padding) {
+      if(colCheck != true && botDis > padding && abs(topDis) > padding) {
         //tell loop we've found it
         ptFound++
       }
@@ -411,43 +448,47 @@ function arcRing(x, y, wid, hei, wt) {
     rightDis = 0
     leftCheck = colCheck
     rightCheck = colCheck
-    // console.log(leftCheck[0])
+
   
     //move left over until it hits black
-    while(leftCheck[0] != 0) {
-      leftDis-=1
-      leftCheck = c.get(here.x+leftDis, here.y)
-      // console.log('left is', leftCheck[0])
+    
+    while(leftCheck != true) {
+      if(leftCheck == true) {
+        console.log('should stop')
+      }
+      leftDis -= 1
+      leftCheck = newPxArray[here.x+leftDis][here.y]
+      newPxArray[here.x+leftDis][here.y] = true
     }
     
     //move right over until it hits black
-    while(rightCheck[0] != 0) {
+    while(rightCheck != true) {
       rightDis++
-      rightCheck = c.get(here.x+rightDis, here.y)
-      // console.log('right is', leftCheck[0])
+      rightCheck = newPxArray[here.x+rightDis][here.y]
+      newPxArray[here.x+rightDis][here.y] = true
+
     }
     //create line from left to right points
-    c.line(here.x+leftDis, here.y, here.x+rightDis, here.y)
+    // c.line(here.x+leftDis, here.y, here.x+rightDis, here.y)
+    // c.circle(here.x, here.y, 20)
+    // for(let i = here.x-leftDis; i < here.x+rightDis; i++) {
+    //   newPxArray[Math.floor(i)][Math.floor(here.y)] = true
+    //   // newPxArray[i][here.y-1] = true
+    //   // newPxArray[i][here.y+1] = true
+    // }
   }
-  
-  function ribbedVert(x, y, wid, hei) {
-    numPanes = 10
-    cellW = wid/numPanes 
-    cellH = hei
-    for(let i = 0; i < numPanes; i++) {
-    }
-  }
+
   
   function blockFinder() {
     blocksFound = 0
     tries = 0
-    while (blocksFound < totalSects && tries < 100) {
+    while (blocksFound < totalSects && tries < 500) {
       //find random point
-      here = createVector(randomInt(0, w), randomInt(0, h))
+      here = createVector(randomInt(marg, w-marg), randomInt(marg, h-marg))
       //check if that point is white
       //if it is, expand on all sides and add as Block object
-      colCheck = c.get(here.x, here.y)
-      if(colCheck[0] == 255) {
+      colCheck = newPxArray[here.x, here.y]
+      if(colCheck != true) {
         //expand a bit
         topDis = 0
         botDis = 0
@@ -459,60 +500,45 @@ function arcRing(x, y, wid, hei, wt) {
         leftCheck = colCheck
         rightCheck = colCheck
   
-        while (topCheck[0] == 255) {
+        while (topCheck != true) {
           topDis-=1
-          topCheck = c.get(here.x, here.y+topDis)
+          topCheck = newPxArray[here.x][here.y+topDis]
         }
   
-        while (botCheck[0] == 255) {
+        while (botCheck != true) {
           botDis++
-          botCheck = c.get(here.x, here.y+botDis)
+          botCheck = newPxArray[here.x][here.y+botDis]
         }
   
-        while (leftCheck[0] == 255) {
+        while (leftCheck != true) {
           leftDis-=1
-          leftCheck = c.get(here.x+leftDis, here.y)
+          leftCheck = newPxArray[here.x+leftDis][here.y]
         }
   
-        while (rightCheck[0] == 255) {
+        while (rightCheck != true) {
           rightDis++
-          rightCheck = c.get(here.x+rightDis, here.y)
+          rightCheck = newPxArray[here.x+rightDis][here.y]
         }
       
       //find exact midpoint
-      midX = map(0.5, 0, 1, here.x+leftDis, here.x+rightDis)
-      midY = map(0.5, 0, 1, here.y+topDis, here.y+botDis)
+      midX = Math.floor(map(0.5, 0, 1, here.x+leftDis, here.x+rightDis))
+      midY = Math.floor(map(0.5, 0, 1, here.y+topDis, here.y+botDis))
       //find width
       w1 = createVector(here.x+leftDis, 0)
       w2 = createVector(here.x+rightDis, 0)
-      wid = w1.dist(w2)
+      wid = Math.floor(w1.dist(w2))
       h1 = createVector(0, here.y+topDis)
       h2 = createVector(0, here.y+botDis)
-      hei = h1.dist(h2)
-      // console.log(wid)
+      hei = Math.floor(h1.dist(h2))
       //create shape from midpoint
       blocks[blocksFound] = new Block(midX, midY, wid, hei)
       blocks[blocksFound].removeOption()
       
       blocksFound++
-      
-      //fill in with black to remove from options
-      // c.rectMode(CORNER)
-      // c.fill('black')
-      // c.noStroke()
-      // c.stroke('red')
-      // c.strokeWeight(0.5)
-      // c.stroke('red')
-      // // c.noFill()
-      // val = map(blocksFound, 0, totalSects, 255, 20)
-      // c.fill(chroma(val, val, val).alpha(1).hex())
-      // c.rect(midX, midY, wid, hei)
-      // c.stroke('black')
-      // c.strokeWeight(10)
-      // c.point(here.x, here.y)
       } else {
         tries++
       }
+      
     }
   
     blocks.sort(dynamicSort("-sz"))
@@ -552,11 +578,10 @@ function arcRing(x, y, wid, hei, wt) {
   }
   
   function glyph(x, y, wid, hei, color) {
-    // y+=hei/2
     sculpts = []
     cutout = randBool(0.35)
     avgSize = (wid+hei)/2
-    morphAmt = 1//randomVal(0.1, 0.9)
+    morphAmt = 1
     numAccents = randomInt(0, 6)
     accents = []
     accOffset = 15*randomInt(-1, 1)
@@ -593,9 +618,6 @@ function arcRing(x, y, wid, hei, wt) {
         }
       }
     }
-    // p.stroke('green')
-    // p.strokeWeight(30)
-    // p.point(x, y)
   }
   
   function taperLine(xA, yA, xB, yB, startWt, endWt, ang) {
@@ -611,8 +633,7 @@ function arcRing(x, y, wid, hei, wt) {
       ptA = ptFromAng(xHere, yHere, ang+90, wt/2)
       ptB = ptFromAng(xHere, yHere, ang-90, wt/2)
       p.strokeWeight(2)
-      // f.point(xHere, yHere)
-      // s.point(xHere, yHere)
+
       p.line(ptA.x, ptA.y, ptB.x, ptB.y)
     }
   }
@@ -627,7 +648,7 @@ function arcRing(x, y, wid, hei, wt) {
     fontW = fontSz*shapeRatio
     p.push()
     p.translate(xC+(fontW/2), yC)
-    pad = 1//1 - spacing
+    pad = 1
     cellH = fontSz
     cellW = fontSz*shapeRatio
     rows = Math.floor((adjHei/cellH))
@@ -637,13 +658,9 @@ function arcRing(x, y, wid, hei, wt) {
     for(let y = 0; y < rows; y++) {
       for(let x = 0; x < cols; x++) {
         if(prng() < textDens) {
-          posX = (-wid/2)+(edgePad)+(cellW*x)//map(x, 0, cols, -wid/2+edgePad, (wid/2)-edgePad)
-          posY = (-hei/2)+(edgePad)+(cellH*y)//map(y, 0, rows, -hei/2+edgePad, (hei/2)-edgePad) //+ (((cellH*pad)/4))
-          // p.strokeWeight(10)
-          // p.stroke(frameCol)
-          // p.noFill()
-          // p.rect(posX, posY+cellH/2, cellW*pad, cellH*pad)
-          // p.point(posX, posY+cellH/2)
+          posX = (-wid/2)+(edgePad)+(cellW*x)
+          posY = (-hei/2)+(edgePad)+(cellH*y)
+
           glyph(posX, posY+(cellH/2), cellW*pad, cellH*pad, color)
         }
         
@@ -665,7 +682,7 @@ function arcRing(x, y, wid, hei, wt) {
     
     cellH = fontSz
     cellW = fontW 
-    console.log(cols, rows)
+    
   
     for(let y = 0; y < rows; y++) {
       for(let x = 0; x < cols; x++) {
@@ -682,14 +699,6 @@ function arcRing(x, y, wid, hei, wt) {
             }
             
           }
-          // glyph(posX, posY+(cellH/2), cellW*pad, cellH*pad, color)
-        // scriptGlyph(posX, posY+(cellH/2), cellW*pad, cellH*pad, 10, 0.2, 1, frameCol, 0.1)
-        //   p.strokeWeight(30)
-        // p.rectMode(CENTER)
-        //   p.stroke(frameCol)
-        //   p.noFill()
-        //   p.rect(posX, posY+cellH/2, cellW*pad, cellH*pad)
-        //   p.point(posX, posY+cellH/2)
           
   
       }
@@ -934,8 +943,6 @@ function arcRing(x, y, wid, hei, wt) {
     }
     randShape(x, y, randomVal(r*0.2, midPt))
     
-    // letterW = (circ/numLetters)/6
-    // letterH = letterW * randomVal(1, 2)
     for(let i = 0; i < 360; i+= 360/numLetters) {
       decide = prng()
       if(decide < textDens) {
@@ -1119,42 +1126,6 @@ function arcRing(x, y, wid, hei, wt) {
     b.endShape(CLOSE)
   }
   
-  function splitBG() {
-    r = h*1.25
-    startAng = randomVal(0, 360)
-    limitAng = randomVal(0, 270)
-    x = blocks[0].pos.x 
-    y = blocks[0].pos.y
-    ns = randomVal(0.001, 0.1)
-    centerW = randomVal(0, w/2)
-    b.beginShape()
-    for(let i = startAng; i < startAng+360; i++) {
-      n = map(noise(i*ns), 0, 1, -1, 1)
-      if(i-startAng < limitAng) {
-        rad = r 
-      } else {
-        rad = 0
-      }
-      xC = cos(i)*rad
-      yC = sin(i)*rad
-      b.vertex(x+xC, y+yC)
-    }
-    b.endShape(CLOSE)
-  }
-  
-  function scatterBG() {
-    center = blocks[0].pos 
-    dens = 600
-    b.stroke('black')
-    b.strokeCap(SQUARE)
-    b.strokeWeight(3)
-    for(let i = 0; i < dens; i++) {
-      ptA = createVector(randomVal(0, w), randomVal(0, h))
-      ptB = ptFromAng(ptA.x, ptA.y, angBetween(center.x, center.y, ptA.x, ptA.y)+randomVal(-1, 1), randomVal(10, 500))
-      b.line(ptA.x, ptA.y, ptB.x, ptB.y)
-    }
-  }
-  
   function checkerBG() {
     dens = randomInt(8, 30)
     off = randomInt(0, 1)
@@ -1192,23 +1163,6 @@ function arcRing(x, y, wid, hei, wt) {
         b.rect(x*cellW+(cellW/2), y*cellH+(cellH/2), cellW, cellH)
     }
   }
-  }
-  
-  function dotBG() {
-    dens = 1000
-    sz = randomVal(100, 800)
-    b.noStroke()
-    for(let i = 0; i < dens; i++) {
-      filled = randBool(0.5) 
-      here = createVector(randomVal(0, w), randomVal(0, h))
-      if(filled == true) {
-        b.fill('black')
-      } else {
-        b.fill('white')
-      }
-  
-      bgBlob(here.x, here.y, sz)
-    }
   }
   
   function bgBlob(x, y, r) {
@@ -1332,18 +1286,7 @@ function arcRing(x, y, wid, hei, wt) {
     }
   }
   
-  function firstRect() {
-    c.rectMode(CENTER)
-    wid = w/2//randomVal(w/2, w*0.66)
-    hei = h/2//randomVal(h/2, h*0.66)
-    here = createVector(randomVal(wid/2, w-(wid/2)), randomVal(hei/2, h-(hei/2)))
-    c.fill(200)
-    c.strokeWeight(3)
-    c.stroke('black')
-    c.rect(here.x, here.y, wid, hei)
-    blocks[0] = new Block(here.x, here.y, wid, hei)
-    // blocks[0].removeOption()
-  }
+
 ////////////////////////////////////////////////////////
 //Blocks.js
 class Block {
@@ -1399,13 +1342,18 @@ class Block {
         }
         c.stroke(255/2)
         c.rect(this.pos.x, this.pos.y, this.wid, this.hei)
+        for(let x = this.pos.x - this.wid/2; x < this.pos.x + this.wid/2; x++) {
+          for(let y = this.pos.y - this.hei/2; y < this.pos.y + this.hei/2; y++) {
+            newPxArray[Math.round(x)][Math.round(y)] = true
+          }
+        }
     }
 
     debugShow() {
         c.rectMode(CENTER)
         c.strokeWeight(0.5)
         c.stroke('red')
-        // c.noFill()
+        
         this.val = randomVal(0, 255)
         c.fill(chroma(this.val, this.val, this.val).alpha(1).hex())
         c.rect(this.pos.x, this.pos.y, this.wid, this.hei)
@@ -1445,7 +1393,7 @@ class Block {
             this.pad = this.r*randomVal(0.1, 0.3)
             this.rad = this.r-this.pad
             this.num = Math.floor((this.wid-this.rad-(this.pad*2))/this.hei)
-            // this.startX = 
+            
             for(let i = 0; i < this.num+1; i++) {
                 this.fillChance = prng()
                 if(this.fillChance < 0.5) {
@@ -1467,7 +1415,7 @@ class Block {
             this.rad = this.r-this.pad
             this.num = Math.floor((this.hei-this.rad-(this.pad*2))/this.wid)
             
-            // this.startX = 
+            
             for(let i = 0; i < this.num+1; i++) {
                 this.yPos = map(i, 0, this.num, this.pos.y-(this.hei/2)+this.rad/2+this.pad, this.pos.y+(this.hei/2)-this.rad/2-this.pad)
                 this.xPos = this.pos.x
@@ -1684,16 +1632,12 @@ class Sculptor {
     }
 
     show() {
-        // f.circle(this.pos.x, this.pos.y, 20)
-        // f.fill(colB)
+        
         p.fill(bgc)
-        // f.rectMode(CENTER)
+        
         p.rectMode(CENTER)
         taperLine(this.pos.x, this.pos.y, this.dest.x, this.dest.y, this.wt, 0, this.correctAng)
-        // f.circle(this.pos.x, this.pos.y, 20)
-        // s.circle(this.pos.x, this.pos.y, 20)
-        // f.circle(this.center.x, this.center.y, 50)
-        // s.line(this.pos.x, this.pos.y, this.dest.x, this.dest.y)
+        
     }
 
 }
@@ -1716,7 +1660,7 @@ class Glyph {
     }
 
     showLineGlyph() {
-        this.dens = 2//5//2//randomInt(2, 6)
+        this.dens = 2
         this.newW = this.wid-((this.padding)*2)
         this.newH = this.hei-(this.padding*2)
         this.fontSz = this.newH/this.dens
@@ -1727,10 +1671,10 @@ class Glyph {
         this.pts = []
         this.cellH = this.fontSz
         this.cellW = this.fontW 
-        // console.log(cols, rows)
+       
         this.y = randomInt(0, this.rows)
         this.x = randomInt(0, this.cols)
-        this.num = 3//randomInt(3, 4)
+        this.num = 3
         p.stroke(this.col)
         p.noFill()
         p.strokeWeight(this.minSz/20)
@@ -1785,11 +1729,6 @@ class Glyph {
           }
           
           
-          //track switching
-        //   trackSwitch = randBool(0.5) 
-        //   if(trackSwitch == true) {
-
-        //   }
           
           
           if(i < this.num-1) {
@@ -1803,8 +1742,6 @@ class Glyph {
 
         }
         p.endShape()
-        // p.rectMode(CENTER)
-        // p.rect(this.pos.x, this.pos.y, this.wid, this.hei)
         
         
     }
@@ -1846,7 +1783,6 @@ uniform sampler2D c;
 uniform sampler2D b;
 uniform float printMess;
 uniform vec2 u_resolution;
-uniform float pxSize;
 uniform float seed;
 uniform vec3 bgc;
 uniform vec3 accCol;
@@ -1938,20 +1874,20 @@ void main() {
   vec3 bg = bgc.rgb;
   bool isTile = false;
   //if the tile is above 0.5, its a tile we can draw to
-  if(sampTexC.r < 0.5 && sampTexC.r != 0.0) {
+  if(sampTexC.r < 0.5) {
     isTile = true;
   } else {
     isTile = false;
   }
   //if its a tile we can draw on and it's black on texB, the bg layer is accCol
-  if(isTile == true && sampTexB.r != 1.0) {
+  if(isTile == true) {
     bg.rgb = accCol;
   }
   //sample and offset by p and b
   //offset is lessened on tiles with bg to reduce visual noise
   float offset = 0.0;
   float mess = 0.0;
-  //0.0025;
+  
   //offset by p color
   
   if(sampTexC.r > 0.5) {
@@ -1964,8 +1900,6 @@ void main() {
   } else if(sampTexC.r < 0.5) {
     offset = map(sampTexC.r, 0.5, 0.0, 0.0, 1.0);
   } 
-
-  // mess = 0.0;
 
   
   st.x += map(sampTex.r, 0.0, 1.0, -offset, offset);
@@ -1981,15 +1915,6 @@ void main() {
   st.xy *= rotate(map(sampTexB.g, 0.0, 1.0, -0.00872665*mess, 0.00872665*mess));
   st.xy -= 0.5;
 
-  //warping
-  // float n = noise(seed+st.xy*1.0);
-  // st.y += map(n, 0.0, 1.0, 0.0, 0.1);
-  
- 
-  
-  
-  // st.x += map(lum, 0.0, 1.0, -0.025, 0.025);
-
 
   vec4 texP = texture2D(p, st);
   vec4 texC = texture2D(c, st);
@@ -2000,7 +1925,7 @@ void main() {
   
 
   //color noise
-  float noiseGray = map(random(st.xy/100.0), 0.0, 1.0, -0.025, 0.1);
+  float noiseGray = map(random(st.xy), 0.0, 1.0, -0.025, 0.1);
 
   vec3 color = vec3(0.0);
   vec3 final = vec3(0.0);
@@ -2009,14 +1934,7 @@ void main() {
   
   if(color.rgb == bgc.rgb) {
     color.rgb = bg.rgb;
-  } else if(color.rgb == vec3(1.0)) {
-    // color = adjustContrast(color, -0.1);
-  } else {
-    // color = adjustContrast(color, 1.0);
-    // color = adjustContrast(color, -0.5);
-  }
-  // color.rgb = bg.rgb;
-  
+  } 
 
   //Draw margin
   if(stB.x < 0.0|| stB.x > 1.0 || stB.y < 0.0 || stB.y > 1.0) {
@@ -2026,18 +1944,13 @@ void main() {
   if(color == vec3(0.0)) {
     color = adjustContrast(color, -0.3);
   } 
-  
-  float overpass = sin(stB.y*800.0);
-  if(overpass < 0.0) {
-    // color = bgc;
-  }
-
-  
 
   color = adjustSaturation(color, 0.3);
   color = adjustContrast(color, -0.1);
   
   color+= noiseGray;
+
+  // color = sampTexC.rgb;
   
   gl_FragColor = vec4(color, 1.0);
 }
@@ -2048,7 +1961,7 @@ void main() {
 //sketch
 
 
-marg = 30//randomVal(10, 400)
+marg = 30
 
 willReadFrequently = true
 
@@ -2056,14 +1969,6 @@ let shade;
 function preload() {
   
 }
-url = new URL(window.location.href)
-urlParams = new URLSearchParams(url.search)
-if(url.searchParams.has('size') == true) {
-  pxSize = url.searchParams.get('size')
-} else {
-  url.searchParams.append('size', 2);
-}
-pxSize = url.searchParams.get('size')
 
 
 //declarations
@@ -2080,22 +1985,22 @@ tries = 0
 
 
 //parameters
-printMess = randomVal(-2, 2)//prng()*2
+printMess = randomVal(-2, 2)
 
 numDivisions = randomInt(5, 20)
 totalSects = numDivisions+1
-lineWtC = 2//randomVal(5, 20)
+lineWtC = 5
 
 flowerExpo = randomVal(0.1, 0.5)
 flowerMidPt = randomVal(0.1, 0.5)
 flowerPetals = randomInt(4, 8)
 
-glyphType = 2//randomInt(1, 2)
+glyphType = 2
 lineWt = 1 - randomVal(0.5, 0.1)
-cornerRatio = randomVal(0.0, 0.5)//0.2
+cornerRatio = randomVal(0.0, 0.5)
 sculptorStartRatio = randomVal(0.1, 1)
-sculptExpo = 0.5//randomVal(0.5, 5)
-stretchMin = 200//randomInt(30, 70)
+sculptExpo = randomVal(0.25, 1)
+stretchMin = 200
 
 bgType = randomInt(1, 6)
 doubleBG = randBool(0.1)
@@ -2103,31 +2008,14 @@ doubleBG = randBool(0.1)
 minColAng = randomVal(0, 360)
 maxColAng = minColAng+145
 
-//weighing one direction in x or y, under 1 is right/down, above is left/up
-sectWeightX = 1//randomVal(0.1, 10)
-sectWeightY = 1//randomVal(0.1, 10)
+sectWeightX = 1
+sectWeightY = 1
 
-const aspectRatio = 4 / 5;
-const height = width / aspectRatio;
-h = height
+
 
 function setup() {
-    
-  var isMobile = false; //initiate as false
-// device detection
-if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
-    || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oraßn|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|verßi|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) {
-    isMobile = true;
-}
-
   createCanvas(width, height, WEBGL);
-  if(pxSize == 1) {
-    pixelDensity(1)
-  } else if (pxSize == 2) {
-    pixelDensity(2)
-  } else if (pxSize == 3) {
-    pixelDensity(3)
-  }
+  pixelDensity(2)
 
   p = createGraphics(width, height)
   c = createGraphics(width, height)
@@ -2140,7 +2028,7 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
   c.noLoop()
 
 
-  padding = 10//constrain((w/(numDivs+3))-(lineWt/2), 0, w/2)
+  padding = 10
   colorMode(HSB, 360, 1.0, 1.0)
   shade = createShader(shaderVert, shaderFrag);
   noiseSeed(randomInt(1, 10000000000000000000000000000))
@@ -2157,10 +2045,7 @@ function draw() {
   b.stroke('white')
   b.strokeWeight(10)
   
-  //Set the first Rect
-  // firstRect()
   //Build the subdivided grid
-
   for(let i = 0; i < numDivisions; i++) {
     dir = prng()
     
@@ -2199,13 +2084,9 @@ function draw() {
     }
   }
   
-  // dotBG()
-  
   
   //Fill those Block objects with patterns/modules
   for(let i = blocks.length-1; i > -1; i-=1) {
-    // p.strokeWeight(3)
-    // blocks[i].showLines()
     colNow = blocks[i].col
     //allow for overlap
     padding = randomVal(300, -200)
@@ -2260,16 +2141,6 @@ function draw() {
   }
 
 
-  // p.background('white')
-  // p.stroke('black')
-  // cave(w/2, h/2, w/2, h/2)
-  // arrowLine(randomVal(0, w), randomVal(0, h), randomVal(0, w), randomVal(0, h), 100)
-  // obj = new Glyph(w/2, h/2, w/2, h/2, frameCol, 0.0)
-  // obj.showLineGlyph()
-  // orgFlower(w/2, h/2, w/2, h/2)
-  // slatFilter(w/2, h/2, w, h)
-
-
   //fine border
   p.rectMode(CENTER)
   p.noFill()
@@ -2278,7 +2149,6 @@ function draw() {
   p.rect(w/2, h/2, w, h)
 
   //Post processing
-  //  copy(p, 0, 0, w, h, 0, 0, w, h)
    bgc = color(bgc)
    accCol = color(accentCol)
    shader(shade)
@@ -2286,7 +2156,6 @@ function draw() {
    shade.setUniform("p", p);
    shade.setUniform("c", c);
    shade.setUniform("b", b);
-   shade.setUniform("pxSize", pxSize);
    shade.setUniform("printMess", printMess);
    shade.setUniform("seed", randomVal(0, 10));
    shade.setUniform("marg", map(marg, 0, width, 0, 1));
@@ -2304,7 +2173,8 @@ function draw() {
    rect(0, 0, w, h)
    window.alba.setMetadata({});
    window.alba.setComplete(true)
-  //  save("blockBatchE.png")
+   console.log("done")
+  //  save("blockBatchF.png")
   //  setTimeout(() => {
   //   window.location.reload();
   // }, "8000");
