@@ -1874,7 +1874,7 @@ void main() {
   vec3 bg = bgc.rgb;
   bool isTile = false;
   //if the tile is above 0.5, its a tile we can draw to
-  if(sampTexC.r < 0.5) {
+  if(sampTexC.r < 0.5 && sampTexC.r != 0.0) {
     isTile = true;
   } else {
     isTile = false;
@@ -1892,7 +1892,7 @@ void main() {
   
   if(sampTexC.r > 0.5) {
     mess = map(sampTexC.r, 0.5, 1.0, 0.0, printMess);
-    if(isTile == true) {
+    if(isTile == true && sampTexB.r != 1.0) {
     offset = 0.0;//0.0005*mess;
   } else {
     offset = 0.002*mess;
