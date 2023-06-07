@@ -188,6 +188,18 @@ function randomInt(min, max) {
     colsInThis = [colA, colB]
     return colsInThis[randomInt(0, 1)]
   }
+  function mirrorArray() {
+    for(let x = 0; x < width; x++) {
+      for(let y = 0; y < height; y++) {
+        if (x > w/2) {
+          dis = x-w/2
+          newPxArray[x][y] = newPxArray[w/2-(x-w/2)][y]
+        }
+        
+      }
+    }
+  }
+  
 
   ///////////////////////////////////////////////////////////////////
 
@@ -211,22 +223,18 @@ if (calcBgLum > 50) {
   frameCol = 'white'; //white
 }
 posterPal = [
-  '#d45c2d',
- "#45885c", 
-// "#edb33f", 
-"#32528f", 
-// '#efaeb6', 
-"#015294", 
+'#b84c21',
+"#45885c", 
+"#1267b7", 
 "#e46019", 
 '#2AB6FD', 
 "#EF4020", 
 "#2B48C7", 
-// '#2B5318', 
 "#9D52FF", 
 "#F6B6D4", 
-// "#fce148", 
-"#FEE719"
-// "#fda273"
+// "#FEE719",
+"#f6b81a",
+"#fe671b"
 ]
 
 const bau = [
@@ -386,7 +394,7 @@ function arcRing(x, y, wid, hei, wt) {
       newPxArray[Math.floor(here.x)][Math.floor(here.y)+Math.floor(botDis)] = true
     }
     //create line from top to bottom points
-    c.line(here.x, here.y+topDis, here.x, here.y+botDis)
+    // c.line(here.x, here.y+topDis, here.x, here.y+botDis)
     // c.circle(here.x, here.y, 20)
     // for(let i = here.y-leftDis; i < here.y+botDis; i++) {
     //   newPxArray[here.x][i] = true
@@ -453,9 +461,6 @@ function arcRing(x, y, wid, hei, wt) {
     //move left over until it hits black
     
     while(leftCheck != true) {
-      if(leftCheck == true) {
-        console.log('should stop')
-      }
       leftDis -= 1
       leftCheck = newPxArray[here.x+leftDis][here.y]
       newPxArray[here.x+leftDis][here.y] = true
@@ -469,7 +474,7 @@ function arcRing(x, y, wid, hei, wt) {
 
     }
     //create line from left to right points
-    c.line(here.x+leftDis, here.y, here.x+rightDis, here.y)
+    // c.line(here.x+leftDis, here.y, here.x+rightDis, here.y)
     // c.circle(here.x, here.y, 20)
     // for(let i = here.x-leftDis; i < here.x+rightDis; i++) {
     //   newPxArray[Math.floor(i)][Math.floor(here.y)] = true
@@ -482,12 +487,13 @@ function arcRing(x, y, wid, hei, wt) {
   function blockFinder() {
     blocksFound = 0
     tries = 0
-    while (blocksFound < totalSects && tries < 1000) {
+    while (blocksFound < totalSects && tries < 3000) {
       //find random point
       here = createVector(randomInt(marg, w-marg), randomInt(marg, h-marg))
       //check if that point is white
       //if it is, expand on all sides and add as Block object
       colCheck = newPxArray[here.x, here.y]
+      
       if(colCheck != true) {
         //expand a bit
         topDis = 0
@@ -519,6 +525,8 @@ function arcRing(x, y, wid, hei, wt) {
           rightDis++
           rightCheck = newPxArray[here.x+rightDis][here.y]
         }
+
+      
       
       //find exact midpoint
       midX = Math.floor(map(0.5, 0, 1, here.x+leftDis, here.x+rightDis))
@@ -531,10 +539,15 @@ function arcRing(x, y, wid, hei, wt) {
       h2 = createVector(0, here.y+botDis)
       hei = Math.floor(h1.dist(h2))
       //create shape from midpoint
-      blocks[blocksFound] = new Block(midX, midY, wid, hei)
-      blocks[blocksFound].removeOption()
+      avgDis = (topDis+botDis+leftDis+rightDis)/4
+      if(avgDis > 5) {
+        blocks[blocksFound] = new Block(midX, midY, wid, hei)
+        blocks[blocksFound].removeOption()
+        blocksFound++
+      }
       
-      blocksFound++
+      
+      tries++
       } else {
         tries++
       }
@@ -542,6 +555,7 @@ function arcRing(x, y, wid, hei, wt) {
     }
   
     blocks.sort(dynamicSort("-sz"))
+    console.log(tries)
   }
   
   function themeShape(x, y, r) {
@@ -638,37 +652,6 @@ function arcRing(x, y, wid, hei, wt) {
     }
   }
   
-  function textBox(xC, yC, wid, hei, numRows, spacing, textDens, color, edgePad) {
-    adjHei = hei-(edgePad*2)
-    adjWid = wid-(edgePad*2)
-    boxW = wid/numRows 
-    boxH = hei/numRows
-    fontSz = adjHei/numRows
-    shapeRatio = randomVal(0.25, 0.7)
-    fontW = fontSz*shapeRatio
-    p.push()
-    p.translate(xC+(fontW/2), yC)
-    pad = 1
-    cellH = fontSz
-    cellW = fontSz*shapeRatio
-    rows = Math.floor((adjHei/cellH))
-    cols = Math.floor((adjWid/cellW))
-    
-    
-    for(let y = 0; y < rows; y++) {
-      for(let x = 0; x < cols; x++) {
-        if(prng() < textDens) {
-          posX = (-wid/2)+(edgePad)+(cellW*x)
-          posY = (-hei/2)+(edgePad)+(cellH*y)
-
-          glyph(posX, posY+(cellH/2), cellW*pad, cellH*pad, color)
-        }
-        
-      }
-    }
-    p.pop()
-  }
-  
   function textBoxNew(xC, yC, wid, hei, numRows, spacing, textDens, color, edgePad) {
     newW = wid-(edgePad*2)
     newH = hei-(edgePad*2)
@@ -690,6 +673,8 @@ function arcRing(x, y, wid, hei, wt) {
         posY = yC+(-hei/2)+edgePad+(cellH*y)
         
           obj = new Glyph(posX, posY+(cellH/2), cellW*pad, min([fontW, fontSz])*pad, color, edgePad/2)
+          // obj = new Glyph(posX, posY+(cellH/2), cellW*pad, cellH*pad, color, edgePad/2)
+
           numStrokes = randomInt(3, 10)
           for(let i = 0; i < numStrokes; i++) {
             if(glyphType == 1) {
@@ -1985,7 +1970,7 @@ tries = 0
 
 
 //parameters
-printMess = randomVal(-2, 2)
+printMess = 0.5//randomVal(-2, 2)
 
 numDivisions = randomInt(5, 20)
 totalSects = numDivisions+1
@@ -2055,6 +2040,7 @@ function draw() {
       newSectionHor()
     }
   }
+  // mirrorArray()
   //Fill the array with Block objects
   blockFinder()
 
