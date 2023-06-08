@@ -1961,22 +1961,23 @@ void main() {
   if(color.rgb == bgc.rgb) {
     color.rgb = bg.rgb;
   } 
-
+  
   //Draw margin
   if(stB.x < 0.0|| stB.x > 1.0 || stB.y < 0.0 || stB.y > 1.0) {
     color = vec3(bgc.r, bgc.g, bgc.b);
   }
-
-  if(color == vec3(0.0)) {
-    color = adjustContrast(color, -0.3);
+  float avgLum = (color.r+color.g+color.b)/3.0;
+  if(avgLum < 0.05) {
+    color = adjustContrast(color, -0.2);
   } 
 
-  float avgLum = (color.r+color.g+color.b)/3.0;
-  if(avgLum < 0.9) {
-    color += map(texT.r, 0.0, 1.0, -0.4, 0.175);
-  }
   color = adjustSaturation(color, 0.3);
   color = adjustContrast(color, -0.1);
+  
+  if(avgLum < 0.9) {
+    color += map(texT.r, 0.0, 1.0, -0.4, 0.2);
+  }
+ 
   
   color+= noiseGray;
 
