@@ -78,62 +78,6 @@ function randomInt(min, max) {
     if (key === "s" || key === "S") {
       save("img.png");
     }
-    if (key === "1") {
-      window.history.replaceState('', '', updateURLParameter(window.location.href, "size", "1"));
-      window.location.reload();
-    }
-    if (key === "2") {
-      window.history.replaceState('', '', updateURLParameter(window.location.href, "size", "2"));
-      window.location.reload();
-    }
-    if (key === "3") {
-      window.history.replaceState('', '', updateURLParameter(window.location.href, "size", "3"));
-      window.location.reload();
-    }
-  }
-  function updateURLParameter(url, param, paramVal)
-  {
-      var TheAnchor = null;
-      var newAdditionalURL = "";
-      var tempArray = url.split("?");
-      var baseURL = tempArray[0];
-      var additionalURL = tempArray[1];
-      var temp = "";
-  
-      if (additionalURL) 
-      {
-          var tmpAnchor = additionalURL.split("#");
-          var TheParams = tmpAnchor[0];
-              TheAnchor = tmpAnchor[1];
-          if(TheAnchor)
-              additionalURL = TheParams;
-  
-          tempArray = additionalURL.split("&");
-  
-          for (var i=0; i<tempArray.length; i++)
-          {
-              if(tempArray[i].split('=')[0] != param)
-              {
-                  newAdditionalURL += temp + tempArray[i];
-                  temp = "&";
-              }
-          }        
-      }
-      else
-      {
-          var tmpAnchor = baseURL.split("#");
-          var TheParams = tmpAnchor[0];
-              TheAnchor  = tmpAnchor[1];
-  
-          if(TheParams)
-              baseURL = TheParams;
-      }
-  
-      if(TheAnchor)
-          paramVal += "#" + TheAnchor;
-  
-      var rows_txt = temp + "" + param + "=" + paramVal;
-      return baseURL + "?" + newAdditionalURL + rows_txt;
   }
   
   function randColor() {
@@ -220,10 +164,10 @@ function randomInt(min, max) {
 bgNum = randomInt(0, 1);
 angA = randomVal(0, 360)
 if(bgNum == 0) {
-  bgc = hslToHex(angA, 20, 95)
+  bgc = hslToHex(angA, 20, 98)
   calcBgLum = 92.5
 } else {
-  bgc = hslToHex(angA, 20, 10)
+  bgc = hslToHex(angA, 20, 2)
   calcBgLum = 15
 }
 
@@ -473,6 +417,7 @@ function arcRing(x, y, wid, hei, wt) {
     
     while(leftCheck != true) {
       leftDis -= 1
+      console.log(leftDis)
       leftCheck = newPxArray[here.x+leftDis][here.y]
       newPxArray[here.x+leftDis][here.y] = true
     }
@@ -1284,7 +1229,7 @@ function arcRing(x, y, wid, hei, wt) {
 
   function tBlob(x, y, r) {
     phase = randomVal(0, 100000000)
-    noiseMax = 1
+    noiseMax = 5
     t.beginShape()
     for(let i = 0; i < 360; i+= 360/30) {
       xOff = (map(cos(i), -1, 1, 0, noiseMax))
@@ -1301,10 +1246,10 @@ function arcRing(x, y, wid, hei, wt) {
   function textureT() {
     t.noStroke()
     for(let i = 0; i < 4000; i++) {
-      val = color(randValCol())//randomVal(0, 255)
+      val = color(randValCol())
       val.setAlpha(0.02 + randomVal(-0.0001, 0.0001))
       t.fill(val)
-      tBlob(randomVal(0, w), randomVal(0, h), randomVal(200, 500))
+      tBlob(randomVal(0, w), randomVal(0, h), randomVal(20, 1000))
     }
   }
 
@@ -1975,7 +1920,7 @@ void main() {
   color = adjustContrast(color, -0.1);
   
   if(avgLum < 0.9) {
-    color += map(texT.r, 0.0, 1.0, -0.4, 0.2);
+    color += map(texT.r, 0.0, 1.0, -0.4, 0.15);
   }
  
   
@@ -2016,9 +1961,9 @@ tries = 0
 
 
 //parameters
-printMess = plusOrMin(randomVal(0.2, 1))
+printMess = randomVal(0.2, 1)
 
-numDivisions = randomInt(1, 15)
+numDivisions = randomInt(1, 20)
 totalSects = numDivisions+1
 lineWtC = 5
 
