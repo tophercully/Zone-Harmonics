@@ -150,6 +150,10 @@ function randomInt(min, max) {
     };
     return `#${f(0)}${f(8)}${f(4)}`;
   }
+
+  function randValCol() {
+    return hslToHex(0, 0, randomVal(0, 255))
+  }
   
   function colHSL(colAng) {
     lum = randomVal(20, 80)
@@ -200,7 +204,14 @@ function randomInt(min, max) {
     }
   }
   
+  function plusOrMin(val) {
+    rand = randomVal(0, 1)
+    if(val < 0.5) {
+      val *= -1
+    } 
 
+    return val
+  }
   ///////////////////////////////////////////////////////////////////
 
   //Background color parameters
@@ -232,8 +243,8 @@ posterPal = [
 "#2B48C7", 
 "#9D52FF", 
 "#F6B6D4", 
-// "#FEE719",
-"#f6b81a",
+"#FEE719",
+// "#f6b81a",
 "#fe671b"
 ]
 
@@ -1270,6 +1281,34 @@ function arcRing(x, y, wid, hei, wt) {
   
     }
   }
+
+  function tBlob(x, y, r) {
+    phase = randomVal(0, 100000000)
+    noiseMax = 1
+    t.beginShape()
+    for(let i = 0; i < 360; i+= 360/30) {
+      xOff = (map(cos(i), -1, 1, 0, noiseMax))
+      yOff = (map(sin(i), -1, 1, 0, noiseMax))
+      n = noise(xOff, yOff, phase)
+      rad= map(n, 0, 1, r*0.5, r)
+      xC = cos(i)*rad 
+      yC = sin(i)*rad 
+      t.vertex(x+xC, y+yC)
+    }
+    t.endShape(CLOSE)
+  }
+
+  function textureT() {
+    t.noStroke()
+    for(let i = 0; i < 4000; i++) {
+      val = color(randValCol())//randomVal(0, 255)
+      val.setAlpha(0.02 + randomVal(-0.0001, 0.0001))
+      t.fill(val)
+      tBlob(randomVal(0, w), randomVal(0, h), randomVal(200, 500))
+    }
+  }
+
+  
   
 
 ////////////////////////////////////////////////////////
@@ -1766,6 +1805,7 @@ varying vec2 vTexCoord;
 uniform sampler2D p;
 uniform sampler2D c;
 uniform sampler2D b;
+uniform sampler2D t;
 uniform float printMess;
 uniform vec2 u_resolution;
 uniform float seed;
@@ -1904,6 +1944,7 @@ void main() {
   vec4 texP = texture2D(p, st);
   vec4 texC = texture2D(c, st);
   vec4 texB = texture2D(b, stB);
+  vec4 texT = texture2D(t, stB);
 
 
 
@@ -1930,12 +1971,16 @@ void main() {
     color = adjustContrast(color, -0.3);
   } 
 
+  float avgLum = (color.r+color.g+color.b)/3.0;
+  if(avgLum < 0.9) {
+    color += map(texT.r, 0.0, 1.0, -0.4, 0.175);
+  }
   color = adjustSaturation(color, 0.3);
   color = adjustContrast(color, -0.1);
   
   color+= noiseGray;
 
-  // color = sampTexC.rgb;
+  // color = texT.rgb;
   
   gl_FragColor = vec4(color, 1.0);
 }
@@ -1970,9 +2015,9 @@ tries = 0
 
 
 //parameters
-printMess = 0.5//randomVal(-2, 2)
+printMess = plusOrMin(randomVal(0.2, 1))
 
-numDivisions = randomInt(5, 20)
+numDivisions = randomInt(1, 15)
 totalSects = numDivisions+1
 lineWtC = 5
 
@@ -2005,6 +2050,7 @@ function setup() {
   p = createGraphics(width, height)
   c = createGraphics(width, height)
   b = createGraphics(width, height)
+  t = createGraphics(width, height)
   angleMode(DEGREES)
   p.angleMode(DEGREES)
   c.angleMode(DEGREES)
@@ -2024,6 +2070,7 @@ function draw() {
   c.background('white')
   b.background('white')
   p.background(bgc)
+  t.background('white')
 
   //Build our background Major Composition layer
   b.fill('black')
@@ -2126,6 +2173,9 @@ function draw() {
     
   }
 
+  //texture
+  textureT()
+
 
   //fine border
   p.rectMode(CENTER)
@@ -2142,6 +2192,7 @@ function draw() {
    shade.setUniform("p", p);
    shade.setUniform("c", c);
    shade.setUniform("b", b);
+   shade.setUniform("t", t);
    shade.setUniform("printMess", printMess);
    shade.setUniform("seed", randomVal(0, 10));
    shade.setUniform("marg", map(marg, 0, width, 0, 1));
