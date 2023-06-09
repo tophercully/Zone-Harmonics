@@ -1939,14 +1939,6 @@ void main() {
 
 marg = 30
 
-willReadFrequently = true
-
-let shade;
-function preload() {
-  
-}
-
-
 //declarations
 angs = []
 blocks = []
@@ -1990,9 +1982,8 @@ sectWeightY = 1
 
 
 function setup() {
-  createCanvas(width, height, WEBGL);
   pixelDensity(2)
-
+  createCanvas(width, height, WEBGL);
   p = createGraphics(width, height)
   c = createGraphics(width, height)
   b = createGraphics(width, height)
@@ -2003,7 +1994,6 @@ function setup() {
   noLoop()
   p.noLoop()
   c.noLoop()
-
 
   padding = 10
   colorMode(HSB, 360, 1.0, 1.0)
@@ -2033,11 +2023,9 @@ function draw() {
       newSectionHor()
     }
   }
-  // mirrorArray()
+
   //Fill the array with Block objects
   blockFinder()
-
-  
 
   //bg builder
   if(bgType == 1) {
@@ -2107,7 +2095,7 @@ function draw() {
           blocks[i].showScatterGrid()
         }
 
-        cornOrn = randBool(0.3) 
+        cornOrn = randBool(0.2) 
         if(cornOrn == true) {
           blocks[i].cornerOrnament()
         }
