@@ -1,17 +1,21 @@
 w = 1600
+h = 2000
 //window.alba._testSeed()
-const { seed = window.alba._testSeed(), width = w, tokenId } = window.alba.params;
+const { seed = window.alba._testSeed(), width = 1600, tokenId } = window.alba.params;
   const prng = window.alba.prng(seed);
 
 const aspectRatio = 4 / 5;
 const height = width / aspectRatio;
-h = height
+
+// w = width
+// h = height
+
 
 //create array to replace c layer
 newPxArray = []
-for(let x = 0; x < width; x++) {
+for(let x = 0; x < w; x++) {
   newPxArray[x] = []
-  for(let y = 0; y < height; y++) {
+  for(let y = 0; y < h; y++) {
     newPxArray[x][y] = false
 
     if(y == 1 || x == 1 || x == w-1 || y == h-1) {
@@ -187,7 +191,8 @@ posterPal = [
 "#2B48C7", 
 "#9D52FF", 
 "#F6B6D4", 
-"#FEE719",
+"#F7DA00",
+// "#FEE719",
 // "#f6b81a",
 "#fe671b"
 ]
@@ -1916,7 +1921,7 @@ void main() {
     color = adjustContrast(color, -0.2);
   } 
 
-  color = adjustSaturation(color, 0.3);
+  // color = adjustSaturation(color, 0.3);
   color = adjustContrast(color, -0.1);
   
   if(avgLum < 0.9) {
@@ -1984,10 +1989,10 @@ sectWeightY = 1
 function setup() {
   pixelDensity(2)
   createCanvas(width, height, WEBGL);
-  p = createGraphics(width, height)
-  c = createGraphics(width, height)
-  b = createGraphics(width, height)
-  t = createGraphics(width, height)
+  p = createGraphics(w, h)
+  c = createGraphics(w, h)
+  b = createGraphics(w, h)
+  t = createGraphics(w, h)
   angleMode(DEGREES)
   p.angleMode(DEGREES)
   c.angleMode(DEGREES)
