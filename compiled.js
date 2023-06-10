@@ -1,7 +1,7 @@
 w = 1600
 h = 2000
 //window.alba._testSeed()
-const { seed = "0x72ad27674184d41991fd1f3cee8ef20bd26befc1c515002b9c08aa131ad7e725", width = 1600, tokenId } = window.alba.params;
+const { seed = window.alba._testSeed(), width = 1600, tokenId } = window.alba.params;
   const prng = window.alba.prng(seed);
 
 const aspectRatio = 4 / 5;
@@ -178,38 +178,16 @@ if (calcBgLum > 50) {
   frameCol = 'white'; //white
 }
 posterPal = [
-// '#b13f12',
 "#19843e", 
 "#80d889",
 "#0660b5", 
-// "#df6b2d", 
 '#16b1ff', 
 "#ef3615", 
 "#1c3ac4", 
 "#8c39f9", 
 "#ef549c", 
-// "#F7DA00",
-// "#FEE719",
 "#f6b81a",
 "#fe671b"
-]
-
-const bau = [
-  "#1267b7",
-  "#ec3e2b",
-  "#f6b81a",
-  // "#E4D6C2",
-  // "#1D1F22",
-]
-
-const elliot = [
-  "#E73542",
-  "#F6A026",
-  "#2CA8C4",
-  "#EE7140",
-  "#289C5B",
-  // "#F5E2CC",
-  // "#161117"
 ]
 
 truePal = shuff(posterPal);
@@ -1247,9 +1225,9 @@ function arcRing(x, y, wid, hei, wt) {
     t.noStroke()
     for(let i = 0; i < 4000; i++) {
       val = color(randValCol())
-      val.setAlpha(0.02 + randomVal(-0.0001, 0.0001))
+      val.setAlpha(0.025 + randomVal(-0.0001, 0.0001))
       t.fill(val)
-      tBlob(randomVal(0, w), randomVal(0, h), randomVal(20, 1000))
+      tBlob(randomVal(0, w), randomVal(0, h), randomVal(100, 1000))
     }
   }
 
@@ -1893,12 +1871,8 @@ void main() {
   vec4 texB = texture2D(b, stB);
   vec4 texT = texture2D(t, stT);
 
-
-
-  
-
   //color noise
-  float noiseGray = map(random(st.xy), 0.0, 1.0, -0.025, 0.1);
+  float noiseGray = map(random(st.xy), 0.0, 1.0, -0.015, 0.05);
 
   vec3 color = vec3(0.0);
   vec3 final = vec3(0.0);
@@ -1918,15 +1892,19 @@ void main() {
     color = adjustContrast(color, -0.2);
   } 
   color = adjustContrast(color, -0.1);
+
+  float textAdj = 0.1;
+  if(avgLum < 0.1) {
+    textAdj = 0.6;
+  } else {
+    textAdj = 0.5;
+  }
   
-  if(avgLum < 0.9) {
-    color += map(texT.r, 0.0, 1.0, -0.4, 0.15);
+  if(avgLum < 0.95) {
+    color = adjustExposure(color, map(texT.r, 0.4, 1.0, -textAdj, textAdj));
   }
  
-  
   color+= noiseGray;
-
-  // color = texT.rgb;
   
   gl_FragColor = vec4(color, 1.0);
 }
@@ -1969,6 +1947,8 @@ cornerRatio = randomVal(0.0, 0.5)
 sculptorStartRatio = randomVal(0.1, 1)
 sculptExpo = randomVal(0.25, 1)
 stretchMin = 200
+
+fontShape = (map_range(cornerRatio, 0.0, 0.5, 1, 0)+map_range(sculptExpo, 0.25, 1, 0, 1))/2
 
 bgType = randomInt(1, 6)
 doubleBG = randBool(0.1)
@@ -2122,14 +2102,14 @@ function draw() {
    bgc = color(bgc)
    accCol = color(accentCol)
    shader(shade)
-   shade.setUniform("u_resolution", [width, height]);
+   shade.setUniform("u_resolution", [w, h]);
    shade.setUniform("p", p);
    shade.setUniform("c", c);
    shade.setUniform("b", b);
    shade.setUniform("t", t);
    shade.setUniform("printMess", printMess);
    shade.setUniform("seed", randomVal(0, 10));
-   shade.setUniform("marg", map(width*0.05, 0, width, 0, 1));
+   shade.setUniform("marg", 0.05);
    shade.setUniform("bgc", [
      bgc.levels[0] / 255,
      bgc.levels[1] / 255,
@@ -2141,8 +2121,13 @@ function draw() {
     accCol.levels[2] / 255,
   ]);
 
-   rect(0, 0, w, h)
-   window.alba.setMetadata({});
+   rect(0, 0, width, height)
+   window.alba.setMetadata({
+    "Density": totalSects,
+    "Print Quality": Math.round(map(printMess, 0.2, 1.0, 10, 1)),
+    "Layered Background": doubleBG,
+    "Font Sharpness": Math.round(map(fontShape, 0, 1, 1, 10))
+   });
    window.alba.setComplete(true)
   //  save("ZoneHarmonics"+seed)
   //  setTimeout(() => {
