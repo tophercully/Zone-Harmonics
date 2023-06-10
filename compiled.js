@@ -1,15 +1,11 @@
 w = 1600
 h = 2000
 //window.alba._testSeed()
-const { seed = window.alba._testSeed(), width = 1600, tokenId } = window.alba.params;
+const { seed = "0x72ad27674184d41991fd1f3cee8ef20bd26befc1c515002b9c08aa131ad7e725", width = 1600, tokenId } = window.alba.params;
   const prng = window.alba.prng(seed);
 
 const aspectRatio = 4 / 5;
 const height = width / aspectRatio;
-
-// w = width
-// h = height
-
 
 //create array to replace c layer
 newPxArray = []
@@ -80,7 +76,7 @@ function randomInt(min, max) {
   
   function keyTyped() {
     if (key === "s" || key === "S") {
-      save("img.png");
+      save("ZoneHarmonics"+seed);
     }
   }
   
@@ -182,18 +178,19 @@ if (calcBgLum > 50) {
   frameCol = 'white'; //white
 }
 posterPal = [
-'#b84c21',
-"#45885c", 
-"#1267b7", 
-"#e46019", 
-'#2AB6FD', 
-"#EF4020", 
-"#2B48C7", 
-"#9D52FF", 
-"#F6B6D4", 
-"#F7DA00",
+// '#b13f12',
+"#19843e", 
+"#80d889",
+"#0660b5", 
+// "#df6b2d", 
+'#16b1ff', 
+"#ef3615", 
+"#1c3ac4", 
+"#8c39f9", 
+"#ef549c", 
+// "#F7DA00",
 // "#FEE719",
-// "#f6b81a",
+"#f6b81a",
 "#fe671b"
 ]
 
@@ -422,7 +419,6 @@ function arcRing(x, y, wid, hei, wt) {
     
     while(leftCheck != true) {
       leftDis -= 1
-      console.log(leftDis)
       leftCheck = newPxArray[here.x+leftDis][here.y]
       newPxArray[here.x+leftDis][here.y] = true
     }
@@ -516,7 +512,6 @@ function arcRing(x, y, wid, hei, wt) {
     }
   
     blocks.sort(dynamicSort("-sz"))
-    console.log(tries)
   }
   
   function themeShape(x, y, r) {
@@ -1822,10 +1817,12 @@ void main() {
   vec2 uv = vTexCoord*u_resolution;
   vec2 st = vTexCoord;
   vec2 stB = vTexCoord;
+  vec2 stT = vTexCoord;
 
   //flip the upside down image
   st.y = 1.0 - st.y;
   stB.y = 1.0 - stB.y;
+  stT.y = 1.0 - stT.y;
 
   //form noise
   st.x += map(random(st.xy), 0.0, 1.0, -0.0004, 0.0004);
@@ -1894,7 +1891,7 @@ void main() {
   vec4 texP = texture2D(p, st);
   vec4 texC = texture2D(c, st);
   vec4 texB = texture2D(b, stB);
-  vec4 texT = texture2D(t, stB);
+  vec4 texT = texture2D(t, stT);
 
 
 
@@ -1914,14 +1911,12 @@ void main() {
   
   //Draw margin
   if(stB.x < 0.0|| stB.x > 1.0 || stB.y < 0.0 || stB.y > 1.0) {
-    color = vec3(bgc.r, bgc.g, bgc.b);
+    color = vec3(bgc.rgb);
   }
   float avgLum = (color.r+color.g+color.b)/3.0;
   if(avgLum < 0.05) {
     color = adjustContrast(color, -0.2);
   } 
-
-  // color = adjustSaturation(color, 0.3);
   color = adjustContrast(color, -0.1);
   
   if(avgLum < 0.9) {
@@ -1942,7 +1937,7 @@ void main() {
 //sketch
 
 
-marg = 30
+marg = 80
 
 //declarations
 angs = []
@@ -1960,7 +1955,7 @@ tries = 0
 //parameters
 printMess = randomVal(0.2, 1)
 
-numDivisions = randomInt(1, 20)
+numDivisions = randomInt(2, 20)
 totalSects = numDivisions+1
 lineWtC = 5
 
@@ -2000,7 +1995,7 @@ function setup() {
   p.noLoop()
   c.noLoop()
 
-  padding = 10
+  padding = (w/totalSects)/2
   colorMode(HSB, 360, 1.0, 1.0)
   shade = createShader(shaderVert, shaderFrag);
   noiseSeed(randomInt(1, 10000000000000000000000000000))
@@ -2134,7 +2129,7 @@ function draw() {
    shade.setUniform("t", t);
    shade.setUniform("printMess", printMess);
    shade.setUniform("seed", randomVal(0, 10));
-   shade.setUniform("marg", map(marg, 0, width, 0, 1));
+   shade.setUniform("marg", map(width*0.05, 0, width, 0, 1));
    shade.setUniform("bgc", [
      bgc.levels[0] / 255,
      bgc.levels[1] / 255,
@@ -2149,9 +2144,8 @@ function draw() {
    rect(0, 0, w, h)
    window.alba.setMetadata({});
    window.alba.setComplete(true)
-   console.log("done")
-  //  save("blockBatchF.png")
+  //  save("ZoneHarmonics"+seed)
   //  setTimeout(() => {
   //   window.location.reload();
-  // }, "8000");
+  // }, "4000");
 }
